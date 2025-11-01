@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RakbukuController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\BookController; 
+
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +50,16 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
+
+// Daftar buku
+    Route::get('/books', [BookController::class, 'index'])->name('books.index');
+    Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
+    Route::get('/book/{id}/', [BookController::class, 'showDetail'])->name('Books.showDetail');
+    Route::get('/books/{id}update', [BookController::class, 'getBook'])->name('books.getBook');
+    Route::post('/books', [BookController::class, 'store'])->name('books.store');
+    Route::delete('/books/{id}', [BookController::class, 'destroy'])->name('books.destroy');
+    Route::put('/books/{book}', [BookController::class, 'update'])->name('books.books.update');
+
 
 // Rak buku
 Route::get('/rak', [RakbukuController::class, 'index'])->name('Rak.showdata');

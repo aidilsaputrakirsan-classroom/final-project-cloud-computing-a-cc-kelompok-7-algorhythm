@@ -81,6 +81,15 @@
                 </li>
 
                 <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('books.index') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-book"></i>
+                        </span>
+                        <span class="hide-menu">Buku</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('categories.index')}}" aria-expanded="false">
                         <span>
                             <i class="ti ti-category-2"></i>
