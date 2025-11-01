@@ -12,7 +12,7 @@ class RakbukuController extends Controller
     {
         $search = $request->input('search');
 
-        // Menghapus 'withCount('books')'
+        // Kode 'withCount('books')' telah dihapus
         $racks = Rack::where('name', 'like', "%$search%")
             ->orWhere('rak', 'like', "%$search%")
             ->get();
@@ -46,9 +46,8 @@ class RakbukuController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Mengubah validasi dari 'rack_name' menjadi 'name' agar konsisten
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255', 
+            'rack_name' => 'required|string|max:255',
             'rak' => 'required|integer',
         ]);
 
@@ -57,23 +56,22 @@ class RakbukuController extends Controller
         }
 
         $rack = Rack::findOrFail($id);
-        // Mengubah input dari 'rack_name' menjadi 'name'
-        $rack->name = $request->input('name'); 
+        $rack->name = $request->input('rack_name');
         $rack->rak = $request->input('rak');
         $rack->save();
 
         return redirect()->route('Rak.showdata')->with('msg', 'Rak berhasil diperbarui');
     }
 
-
     public function destroy($id)
     {
         $rack = Rack::findOrFail($id);
 
-        // Menghapus pengecekan relasi 'books'
+        // Blok 'if ($rack->books()->count() > 0)' telah dihapus
+        // karena relasi 'books()' tidak ada.
+
         $rack->delete();
 
         return redirect()->route('Rak.showdata')->with('msg', 'Rak berhasil dihapus');
     }
-
 }

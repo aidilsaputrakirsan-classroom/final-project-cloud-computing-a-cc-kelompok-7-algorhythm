@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 // 1. Arahkan ke Controller yang baru Anda buat
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RakbukuController;
+use App\Http\Controllers\KategoriController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,3 +55,11 @@ Route::get('/rak/create', [RakbukuController::class, 'create'])->name('Rak.creat
 Route::post('/rak/create', [RakbukuController::class, 'store'])->name('Rak.storeRak');
 Route::delete('/racks/{rack}', [RakbukuController::class, 'destroy'])->name('racks.destroy');
 Route::put('/racks/{rack}', [RakbukuController::class, 'update'])->name('racks.update');
+
+// Kategori Buku
+    Route::get('/categories', [KategoriController::class, 'index'])->name('categories.index');
+    Route::get('/categories/create', [KategoriController::class, 'create'])->name('categories.create');
+    Route::post('/categories/create', [KategoriController::class, 'store'])->name('categories.store');
+    Route::put('/categories/{category}', [KategoriController::class, 'update'])->name('categories.update');
+    Route::delete('/categories/{category}', [KategoriController::class, 'destroy'])->name('categories.destroy');
+    Route::get('/categories/show', [KategoriController::class, 'index'])->name('categories.show');
