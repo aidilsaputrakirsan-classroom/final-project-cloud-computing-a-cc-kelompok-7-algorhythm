@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 // 1. Arahkan ke Controller yang baru Anda buat
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\RakbukuController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,14 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 // 5. Halaman yang hanya bisa diakses setelah login
 // Middleware 'auth' akan otomatis melempar user ke rute 'login' jika mereka belum login
+// Kita arahkan dashboard langsung ke daftar rak agar hanya fitur login + rak yang tersisa
 Route::get('dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
+
+// Rak buku
+Route::get('/rak', [RakbukuController::class, 'index'])->name('Rak.showdata');
+Route::get('/rak/create', [RakbukuController::class, 'create'])->name('Rak.createRak');
+Route::post('/rak/create', [RakbukuController::class, 'store'])->name('Rak.storeRak');
+Route::delete('/racks/{rack}', [RakbukuController::class, 'destroy'])->name('racks.destroy');
+Route::put('/racks/{rack}', [RakbukuController::class, 'update'])->name('racks.update');
