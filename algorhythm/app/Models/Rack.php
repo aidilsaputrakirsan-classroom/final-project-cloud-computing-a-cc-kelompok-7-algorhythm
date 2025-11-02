@@ -11,10 +11,13 @@ class Rack extends Model
 {
     use HasFactory, SoftDeletes;
 
-    // Menentukan nama tabel yang sesuai
     protected $table = 'tbl_racks';
 
-    // Menentukan kolom yang dapat diisi (mass assignable)
-    protected $fillable = ['id', 'name', 'rak'];
+    protected $fillable = ['id','name', 'rak'];
 
+    // Define relationship with books
+    public function books()
+    {
+        return $this->hasMany(Book::class, 'rack_id');
+    }
 }

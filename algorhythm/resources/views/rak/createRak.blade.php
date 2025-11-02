@@ -9,7 +9,8 @@
             <div class="card shadow-sm animate__animated animate__fadeInUp">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Tambah Rak</h5>
-                    <a href="{{ route('Rak.showdata') }}" class="btn btn-sm btn-outline-primary btn-custom">
+                    <!-- Tombol Kembali (Sekarang Biru Gradient) -->
+                    <a href="{{ route('member.index') }}" class="btn btn-custom">
                         <i class="ti ti-arrow-left"></i> Kembali
                     </a>
                 </div>

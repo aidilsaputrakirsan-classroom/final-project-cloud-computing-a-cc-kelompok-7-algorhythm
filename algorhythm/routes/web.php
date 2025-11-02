@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 // 1. Arahkan ke Controller yang baru Anda buat
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RakbukuController;
 use App\Http\Controllers\KategoriController;
@@ -50,6 +51,14 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('dashboard', function () {
     return view('dashboard');
 })->middleware('auth')->name('dashboard');
+
+// Route untuk Member
+Route::get('/member', [MemberController::class, 'index'])->name('member.index');
+Route::get('/member/create', [MemberController::class, 'create'])->name('member.create'); // INI YANG HILANG
+Route::post('/member', [MemberController::class, 'store'])->name('member.store');
+Route::get('/member/{id}/edit', [MemberController::class, 'edit'])->name('member.edit');
+Route::put('/member/{id}', [MemberController::class, 'update'])->name('member.update');
+Route::delete('/member/{id}', [MemberController::class, 'destroy'])->name('member.destroy');
 
 // Daftar buku
     Route::get('/books', [BookController::class, 'index'])->name('books.index');

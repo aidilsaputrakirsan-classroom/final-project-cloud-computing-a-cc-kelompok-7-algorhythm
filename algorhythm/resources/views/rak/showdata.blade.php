@@ -69,7 +69,7 @@
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-custom btn-sm btn-danger mt-1"
                                             onclick="return confirm('Apakah Anda yakin ingin menghapus rak ini?')">
-                                            <i class="ti ti-trash"></i> Delete
+                                            <i class="ti ti-trash"></i>Delete 
                                         </button>
                                     </form>
                                 </td>

@@ -10,8 +10,15 @@ class KategoriController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search', '');
-        $categories = Kategori::where('name', 'like', '%' . $search . '%')->get();
+        $search = $request->input('search', ''); // Default value to prevent null
+        $categories = Kategori::withCount([
+            'books',
+            'bookStocks as total_books' => function ($query) {
+                $query->select(\DB::raw('sum(jmlh_tersedia)'));
+            }
+        ])
+            ->where('name', 'like', '%' . $search . '%')
+            ->get();
 
         return view('kategori.showkategori', compact('categories'));
     }
@@ -31,6 +38,7 @@ class KategoriController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        // Check if the category name already exists
         if (Kategori::where('name', $request->input('name'))->exists()) {
             return redirect()->back()->with('msg', 'Nama kategori sudah ada')->withInput();
         }
@@ -62,6 +70,9 @@ class KategoriController extends Controller
     public function destroy($id)
     {
         $category = Kategori::findOrFail($id);
+        if ($category->books()->count() > 0) {
+        return redirect()->route('categories.index')->with('error', 'Kategori tidak dapat dihapus karena masih memiliki buku');
+        }
         $category->delete();
 
         return redirect()->route('categories.index')->with('msg', 'Kategori berhasil dihapus');

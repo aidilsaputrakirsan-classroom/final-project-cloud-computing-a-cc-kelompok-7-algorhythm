@@ -12,8 +12,8 @@ class RakbukuController extends Controller
     {
         $search = $request->input('search');
 
-        // Kode 'withCount('books')' telah dihapus
-        $racks = Rack::where('name', 'like', "%$search%")
+        $racks = Rack::withCount('books')
+            ->where('name', 'like', "%$search%")
             ->orWhere('rak', 'like', "%$search%")
             ->get();
 
@@ -63,15 +63,18 @@ class RakbukuController extends Controller
         return redirect()->route('Rak.showdata')->with('msg', 'Rak berhasil diperbarui');
     }
 
+
     public function destroy($id)
     {
-        $rack = Rack::findOrFail($id);
+    $rack = Rack::findOrFail($id);
 
-        // Blok 'if ($rack->books()->count() > 0)' telah dihapus
-        // karena relasi 'books()' tidak ada.
-
-        $rack->delete();
-
-        return redirect()->route('Rak.showdata')->with('msg', 'Rak berhasil dihapus');
+    if ($rack->books()->count() > 0) {
+    return redirect()->route('Rak.showdata')->with('error', 'Rak tidak dapat dihapus karena masih memiliki buku');
     }
+
+    $rack->delete();
+
+    return redirect()->route('Rak.showdata')->with('msg', 'Rak berhasil dihapus');
+    }
+
 }
