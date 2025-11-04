@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->string('qr_code', 255)->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('tbl_users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
         });
      
     }
