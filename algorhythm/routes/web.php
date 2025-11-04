@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RakbukuController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BookController; 
+use App\Http\Controllers\PeminjamanController;
 
 
 /*
@@ -84,3 +85,20 @@ Route::put('/racks/{rack}', [RakbukuController::class, 'update'])->name('racks.u
     Route::put('/categories/{category}', [KategoriController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [KategoriController::class, 'destroy'])->name('categories.destroy');
     Route::get('/categories/show', [KategoriController::class, 'index'])->name('categories.show');
+
+//Peminjaman
+Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');
+
+    Route::get('/peminjaman/search', [PeminjamanController::class, 'search'])->name('Peminjaman.search');
+
+    Route::get('/search-books', [PeminjamanController::class, 'searchBookPage'])->name('search.book.page');
+
+    Route::post('/store-peminjaman', [PeminjamanController::class, 'storePeminjaman'])->name('createPinjaman');
+
+    Route::delete('/peminjaman/{id}', [PeminjamanController::class, 'destroy'])->name('peminjaman.destroy');
+
+    Route::get('/search-member-by-email', [PeminjamanController::class, 'searchMemberByEmail'])->name('search.member.by.email');
+    
+});
