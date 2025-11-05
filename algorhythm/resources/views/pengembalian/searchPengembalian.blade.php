@@ -38,7 +38,7 @@
                         <!-- Form pencarian -->
                         <form id="searchForm" action="{{ route('pengembalian.cari') }}" method="GET">
                             <div class="mb-3">
-                                <label for="keyword" class="form-label">Masukkan Resi Peminjaman atau Email Anggota</label>
+                                <label for="keyword" class="form-label">Masukkan Resi Peminjaman</label>
                                 <input type="text" class="form-control" id="keyword" name="keyword" placeholder="Resi Peminjaman atau Email" value="{{ request('keyword') }}">
                                 <div class="invalid-feedback"></div>
                             </div>
