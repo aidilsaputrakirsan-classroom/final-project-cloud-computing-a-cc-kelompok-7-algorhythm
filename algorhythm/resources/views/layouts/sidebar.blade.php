@@ -48,13 +48,6 @@
 
 <aside class="left-sidebar">
     <div class="sidebar-wrapper">
-        <!-- Bagian header sidebar (tanpa logo) -->
-        <div class="text-center py-4">
-            <!-- Logo dihapus, biar tetap ada jarak atas -->
-            <h6 class="text-white mt-2 mb-0 fw-semibold">Teknik Informatika</h6>
-            <hr class="text-white opacity-25 mx-4">
-        </div>
-
         <!-- Sidebar navigation -->
         <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
             <ul id="sidebarnav">
