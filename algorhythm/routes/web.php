@@ -8,6 +8,7 @@ use App\Http\Controllers\RakbukuController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BookController; 
 use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\PengembalianController;
 
 
 /*
@@ -102,3 +103,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/search-member-by-email', [PeminjamanController::class, 'searchMemberByEmail'])->name('search.member.by.email');
     
 });
+
+// Pengembalian buku
+    Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian');
+    Route::get('/pengembalian/search', [PengembalianController::class, 'search'])->name('pengembalian.search');
+    Route::get('/pengembalian/cari', [PengembalianController::class, 'cari'])->name('pengembalian.cari');
+    // Tambahkan parameter {peminjaman} agar Laravel bisa melakukan route model binding
+    Route::put('/pengembalian/simpan/{peminjaman}', [PengembalianController::class, 'simpan'])->name('pengembalian.simpan');
+    Route::delete('pengembalian/hapus/{id}', [PengembalianController::class, 'hapus'])->name('pengembalian.hapus');
