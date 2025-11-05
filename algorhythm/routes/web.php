@@ -108,5 +108,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pengembalian', [PengembalianController::class, 'index'])->name('pengembalian');
     Route::get('/pengembalian/search', [PengembalianController::class, 'search'])->name('pengembalian.search');
     Route::get('/pengembalian/cari', [PengembalianController::class, 'cari'])->name('pengembalian.cari');
-    Route::put('/pengembalian/simpan', [PengembalianController::class, 'simpan'])->name('pengembalian.simpan');
+    // Tambahkan parameter {peminjaman} agar Laravel bisa melakukan route model binding
+    Route::put('/pengembalian/simpan/{peminjaman}', [PengembalianController::class, 'simpan'])->name('pengembalian.simpan');
     Route::delete('pengembalian/hapus/{id}', [PengembalianController::class, 'hapus'])->name('pengembalian.hapus');

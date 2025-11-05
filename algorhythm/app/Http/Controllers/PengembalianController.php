@@ -44,22 +44,28 @@ class PengembalianController extends Controller
         ]);
 
         $keyword = $request->input('keyword');
+        
+        // Buat query dasar
         $query = Peminjaman::with(['member', 'book']);
 
+        // Cari berdasarkan resi dulu
         $peminjamanByResi = $query->where('resi_pjmn', $keyword)
-            ->whereNull('return_date')
+            ->whereNull('return_date') // Hanya yang masih aktif
             ->first();
 
+        // Jika tidak ketemu, baru cari berdasarkan email
         if (!$peminjamanByResi) {
-            $peminjaman = $query->whereHas('member', function ($q) use ($keyword) {
+            // Clone query agar tidak tercampur
+            $peminjaman = $query->clone()->whereHas('member', function ($q) use ($keyword) {
                 $q->where('email', $keyword);
-            })->whereNull('return_date')->get();
+            })->whereNull('return_date')->get(); // Hanya yang masih aktif
         } else {
+            // Jika ketemu by resi, jadikan collection agar @foreach bisa jalan
             $peminjaman = collect([$peminjamanByResi]);
         }
 
         if ($peminjaman->isNotEmpty()) {
-            return view('Pengembalian.searchPengembalian', ['peminjaman' => $peminjaman]);
+            return view('Pengembalian.searchPengembalian', ['peminjaman' => $peminjaman, 'keyword' => $keyword]);
         } else {
             $errors = ['Data peminjaman aktif tidak ditemukan.'];
             return redirect()->route('pengembalian.search')->withErrors($errors);
@@ -68,49 +74,45 @@ class PengembalianController extends Controller
 
 
     /**
-     * VERSI BARU - Diperbaiki untuk mengambil ID dari Request
-     * Menyimpan data pengembalian.
+     * INI ADALAH FUNGSI YANG DIPERBAIKI
+     * 1. Kita hanya menerima (Peminjaman $peminjaman) dari URL.
+     * 2. Kita HAPUS total Validator '$request->validate()' yang menyebabkan error "id field is required".
      */
-    public function simpan(Request $request)
+    public function simpan(Peminjaman $peminjaman)
     {
-        // 1. Validasi bahwa 'id' ada di dalam form
-        $request->validate([
-            'id' => 'required|integer|exists:tbl_peminjaman,id',
-        ]);
-
-        $peminjaman = Peminjaman::find($request->input('id'));
-
-        // 2. Cek dulu, jangan-jangan sudah dikembalikan
+        // 1. Cek dulu, jangan-jangan sudah dikembalikan
         if ($peminjaman->return_date) {
             return redirect()->route('pengembalian')->with('error', 'Buku ini sudah dikembalikan sebelumnya.');
         }
 
-        // 3. LANGSUNG SIMPAN HAL UTAMA (return_date)
-        $peminjaman->return_date = Carbon::now();
-        $peminjaman->save();
+        // 2. Langsung simpan return_date
+        try {
+            $peminjaman->return_date = Carbon::now();
+            $peminjaman->save();
 
-        // 4. SECARA TERPISAH, coba kembalikan stok
+        } catch (\Exception $e) {
+            // Jika GAGAL, ini adalah error DB yang Anda lihat sebelumnya
+            Log::error('Gagal simpan return_date: ' . $e->getMessage());
+            // Kita kembalikan ke halaman search, BUKAN back()
+            return redirect()->route('pengembalian.search')->with('error', 'Gagal memproses pengembalian. Error DB: ' . $e->getMessage());
+        }
+
+        // 3. SECARA TERPISAH, coba kembalikan stok
         try {
             $bookStock = BookStock::where('book_id', $peminjaman->book_id)->first();
             
             if ($bookStock) {
                 $bookStock->increment('jmlh_tersedia');
             } else {
-                // Jika tidak ada data stok, buat log
                 Log::warning('Tidak ditemukan data stok untuk book_id: ' . $peminjaman->book_id);
             }
 
         } catch (\Exception $stockError) {
-            // Jika GAGAL update stok, jangan batalkan pengembalian.
-            // Cukup catat errornya dan tetap lanjutkan.
-            Log::error('GSERR: Gagal update stok: ' . $stockError->getMessage());
-            
-            // Redirect dengan pesan "sukses" tapi ada peringatan
-            return redirect()->route('pengembalian')->with('success', 'Buku berhasil dikembalikan (Peringatan: ' . $stockError->getMessage() . ').');
+            Log::error('Gagal update stok: ' . $stockError->getMessage());
+            return redirect()->route('pengembalian')->with('success', 'Buku berhasil dikembalikan (Peringatan: Gagal update stok).');
         }
 
-        // 5. Jika semua berhasil
+        // 4. Jika semua berhasil
         return redirect()->route('pengembalian')->with('success', 'Buku telah berhasil dikembalikan.');
     }
 }
-
