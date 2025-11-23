@@ -3,92 +3,231 @@
 @section('title', 'Cari Buku')
 
 @section('content')
-<div class="container mt-4">
-    <a href="{{ route('Peminjaman.search') }}" class="btn btn-outline-primary mb-4 animate__animated animate__fadeInLeft">
-        <i class="ti ti-arrow-left"></i> Kembali
-    </a>
+<div class="container mt-4 animate__animated animate__fadeIn">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <div class="card shadow-sm animate__animated animate__fadeInUp mb-4">
+                
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Cari Buku</h5>
+                    <a href="{{ route('Peminjaman.search') }}" class="btn btn-sm btn-outline-primary btn-custom-outline">
+                        <i class="ti ti-arrow-left"></i> Kembali
+                    </a>
+                </div>
 
-    <div class="card shadow-lg border-0 animate__animated animate__fadeInUp">
-        <div class="card-body">
-            <h3 class="card-title fw-bold text-center">Cari Buku</h3>
-            <form action="{{ route('search.book.page') }}" method="GET" class="mb-4">
-                @csrf
-                @if (request()->has('search') && request()->filled('search'))
-                    <div class="mb-3">
-                        <div class="list-group-item animate__animated animate__fadeInRight">
-                            <h6 class="fw-semibold">Member</h6>
-                            <p class="mb-1"><strong>Nama:</strong> {{ $member->first_name }} {{ $member->last_name }}</p>
-                            <p class="mb-0"><strong>Email:</strong> {{ $member->email }}</p>
+                <div class="card-body p-4">
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show animate__animated animate__shakeX" role="alert">
+                            <i class="ti ti-alert-circle me-2"></i> {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show animate__animated animate__fadeInDown" role="alert">
+                            <i class="ti ti-check-circle me-2"></i> {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if (request()->has('search') && request()->filled('search'))
+                        <div class="alert alert-info d-flex align-items-center mb-4 shadow-sm border-0" role="alert">
+                            <div class="bg-white p-2 rounded-circle me-3 text-primary shadow-sm">
+                                <i class="ti ti-user fs-4"></i>
+                            </div>
+                            <div>
+                                <small class="text-uppercase fw-bold text-muted" style="font-size: 0.75rem;">Peminjam</small>
+                                <h6 class="fw-bold text-dark mb-0">{{ $member->first_name }} {{ $member->last_name }}</h6>
+                                <small>{{ $member->email }}</small>
+                            </div>
+                        </div>
+                    @endif
+
+                    <div class="row justify-content-center mt-2">
+                        <div class="col-md-10">
+                            <form action="{{ route('search.book.page') }}" method="GET">
+                                @csrf
+                                <input type="hidden" name="member_id" value="{{ $memberId }}">
+                                
+                                <div class="mb-3 text-center">
+                                    <label for="search" class="form-label fw-bold text-secondary">Cari Berdasarkan Judul, Penulis, atau ISBN</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light"><i class="ti ti-search"></i></span>
+                                        <input type="text" class="form-control form-control-lg" id="search" name="search" 
+                                            placeholder="Masukkan kata kunci..." value="{{ request('search') }}" required>
+                                        <button type="submit" class="btn btn-custom px-4">Cari Buku</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                @endif
-
-                <input type="hidden" name="member_id" value="{{ $memberId }}">
-
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Cari berdasarkan judul, penulis, penerbit,ISBN atau Kategori" name="search" value="{{ request('search') }}">
-                    <button class="btn btn-primary" type="submit">Cari</button>
                 </div>
-            </form>
-
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show animate__animated animate__shakeX" role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show animate__animated animate__shakeX" role="alert">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+            </div>
 
             @if (request()->has('search') && request()->filled('search'))
                 @if (!empty($books) && $books->count() > 0)
-                    <h5 class="mt-4 text-center">Hasil Pencarian</h5>
-                    <div class="row row-cols-1 row-cols-md-2 g-4">
-                        @foreach ($books as $book)
-                            <div class="col animate__animated animate__zoomIn">
-                                <div class="card h-100 shadow-sm border-0">
-                                    <img src="{{ asset($book->book_cover) }}" class="card-img-top" alt="{{ $book->title }}" style="margin: 20px; max-width: 220px; height: auto;">
+                    <div class="card shadow-sm animate__animated animate__fadeInUp">
+                        <div class="card-header bg-white py-3">
+                            <h6 class="card-title mb-0 fw-bold text-dark">
+                                <i class="ti ti-list me-2 text-primary"></i>Hasil Pencarian
+                            </h6>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-striped align-middle mb-0">
+                                    <thead class="custom-thead bg-light">
+                                        <tr>
+                                            <th scope="col" class="text-center py-3">No</th>
+                                            <th scope="col" class="text-center">Cover</th>
+                                            <th scope="col">Judul Buku</th>
+                                            <th scope="col" class="text-center">Kategori & Rak</th>
+                                            <th scope="col" class="text-center">Stok</th>
+                                            <th scope="col" class="text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-group-divider">
+                                        @foreach ($books as $book)
+                                            <tr class="animate__animated animate__fadeIn" style="animation-delay: {{ $loop->iteration * 0.1 }}s;">
+                                                <td class="text-center">{{ $loop->iteration }}</td>
+                                                
+                                                <td class="text-center">
+                                                    @if($book->book_cover)
+                                                        <img src="{{ asset($book->book_cover) }}" alt="Cover" class="shadow-sm rounded border" style="width: 45px; height: 65px; object-fit: cover;">
+                                                    @else
+                                                        <span class="badge bg-secondary">No Cover</span>
+                                                    @endif
+                                                </td>
 
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $book->title }}</h5>
-                                        <p class="card-text"><strong>Penulis:</strong> {{ $book->author }}</p>
-                                        <p class="card-text"><strong>Penerbit:</strong> {{ $book->publisher }}</p>
-                                        <p class="card-text"><strong>ISBN:</strong> {{ $book->isbn }}</p>
-                                        <p class="card-text"><strong>Kategori:</strong> {{ optional($book->category)->name }}</p>
-                                        <p class="card-text"><strong>Rak:</strong> {{ optional($book->rack)->name }}</p>
-                                        <p class="card-text"><strong>Jumlah Tersedia:</strong> {{ $book->bookStock->jmlh_tersedia }}</p>
-                                        <p class="card-text"><strong>Deskripsi:</strong> {{ $book->description }}</p>
-                                        <form action="{{ route('createPinjaman') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="member_id" value="{{ $memberId }}">
-                                            <input type="hidden" name="book_id" value="{{ $book->id }}">
-                                            <button type.submit" class="btn btn-outline-success">
-                                                <i class="bi bi-check2-circle"></i> Simpan
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
+                                                <td>
+                                                    <div class="d-flex flex-column">
+                                                        <span class="fw-bold text-dark">{{ $book->title }}</span>
+                                                        <small class="text-muted">{{ $book->author }} | {{ $book->year }}</small>
+                                                        <small class="text-muted" style="font-size: 0.75rem;">{{ $book->publisher }}</small>
+                                                    </div>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <span class="badge bg-info text-dark bg-opacity-10 border border-info mb-1">{{ optional($book->category)->name }}</span>
+                                                    <br>
+                                                    <span class="badge bg-secondary text-dark bg-opacity-10 border border-secondary">{{ optional($book->rack)->name }}</span>
+                                                </td>
+
+                                                <td class="text-center fw-bold {{ $book->bookStock->jmlh_tersedia > 0 ? 'text-success' : 'text-danger' }}">
+                                                    {{ $book->bookStock->jmlh_tersedia }}
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <form action="{{ route('createPinjaman') }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="member_id" value="{{ $memberId }}">
+                                                        <input type="hidden" name="book_id" value="{{ $book->id }}">
+                                                        
+                                                        <button type="submit" class="btn btn-sm btn-success-custom text-white px-3" {{ $book->bookStock->jmlh_tersedia <= 0 ? 'disabled' : '' }}>
+                                                            <i class="ti ti-check me-1"></i> Pilih
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                        @endforeach
+                        </div>
                     </div>
                 @else
-                    <p class="text-muted text-center mt-4">-- Buku yang dicari tidak tersedia --</p>
+                    <div class="alert alert-warning text-center mt-3 shadow-sm border-0 animate__animated animate__fadeInUp" role="alert">
+                        <i class="ti ti-alert-circle me-2 fs-5"></i> <br> Buku yang Anda cari tidak ditemukan.
+                    </div>
                 @endif
-            @else
-                <p class="text-muted text-center mt-4">-- Data buku akan muncul setelah pencarian --</p>
             @endif
+
         </div>
     </div>
 </div>
-@endsection
 
-@section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    /* Tombol Utama (Biru Gradasi) */
+    .btn-custom {
+        background: linear-gradient(90deg, #36d1dc 0%, #5b86e5 100%);
+        border: none;
+        color: white;
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+    .btn-custom:hover {
+        background: linear-gradient(90deg, #5b86e5 0%, #36d1dc 100%);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Tombol Kembali (Outline) */
+    .btn-custom-outline {
+        background: transparent;
+        border: 1px solid #5b86e5;
+        color: #5b86e5;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .btn-custom-outline:hover {
+        background: linear-gradient(90deg, #36d1dc 0%, #5b86e5 100%);
+        color: white;
+        border-color: transparent;
+    }
+
+    /* Tombol Pilih/Simpan (Hijau Gradasi) */
+    .btn-success-custom {
+        background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+        border: none;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .btn-success-custom:hover {
+        background: linear-gradient(90deg, #38ef7d 0%, #11998e 100%);
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px rgba(56, 239, 125, 0.3);
+    }
+    .btn-success-custom:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Card Style */
+    .card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    /* Input Form Style */
+    .form-control-lg {
+        border-radius: 0 10px 10px 0;
+        border: 1px solid #ced4da;
+        font-size: 1rem;
+    }
+    .input-group-text {
+        border-radius: 10px 0 0 10px;
+        border: 1px solid #ced4da;
+        background-color: #f8f9fa;
+        color: #5b86e5;
+    }
+    .form-control:focus {
+        border-color: #5b86e5;
+        box-shadow: 0 0 0 0.2rem rgba(91, 134, 229, 0.25);
+    }
+
+    /* Tabel Header */
+    .custom-thead th {
+        font-weight: 600;
+        color: #555;
+        background-color: #f8f9fa;
+    }
+
+    .animate__animated {
+        animation-duration: 0.5s;
+    }
+</style>
 @endsection

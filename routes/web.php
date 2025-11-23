@@ -50,26 +50,28 @@ Route::middleware(['auth'])->group(function () {
     // Daftar buku
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
-    Route::get('/book/{id}/', [BookController::class, 'showDetail'])->name('Books.showDetail');
-    Route::get('/books/{id}update', [BookController::class, 'getBook'])->name('books.getBook');
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
+    Route::get('/books/{id}/edit', [BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{id}', [BookController::class, 'update'])->name('books.update');
+    Route::get('/book/{id}/', [BookController::class, 'showDetail'])->name('Books.showDetail');
     Route::delete('/books/{id}', [BookController::class, 'destroy'])->name('books.destroy');
-    Route::put('/books/{book}', [BookController::class, 'update'])->name('books.books.update');
 
-    // Rak buku (INI YANG ANDA MAKSUD)
+    // Rak Buku
     Route::get('/rak', [RakbukuController::class, 'index'])->name('Rak.showdata');
     Route::get('/rak/create', [RakbukuController::class, 'create'])->name('Rak.createRak');
     Route::post('/rak/create', [RakbukuController::class, 'store'])->name('Rak.storeRak');
-    Route::delete('/racks/{rack}', [RakbukuController::class, 'destroy'])->name('racks.destroy');
+    Route::get('/racks/{rack}/edit', [RakbukuController::class, 'edit'])->name('racks.edit');
     Route::put('/racks/{rack}', [RakbukuController::class, 'update'])->name('racks.update');
+    Route::delete('/racks/{rack}', [RakbukuController::class, 'destroy'])->name('racks.destroy');
 
     // Kategori Buku
     Route::get('/categories', [KategoriController::class, 'index'])->name('categories.index');
     Route::get('/categories/create', [KategoriController::class, 'create'])->name('categories.create');
-    Route::post('/categories/create', [KategoriController::class, 'store'])->name('categories.store');
+    Route::post('/categories', [KategoriController::class, 'store'])->name('categories.store'); // URI standar biasanya '/categories' bukan '/categories/create' untuk post
+    Route::get('/categories/{category}/edit', [KategoriController::class, 'edit'])->name('categories.edit');
     Route::put('/categories/{category}', [KategoriController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [KategoriController::class, 'destroy'])->name('categories.destroy');
-    Route::get('/categories/show', [KategoriController::class, 'index'])->name('categories.show');
+    Route::get('/categories/{category}', [KategoriController::class, 'show'])->name('categories.show');
 
     //Peminjaman
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');

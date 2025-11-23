@@ -9,9 +9,9 @@
             <div class="card shadow-sm animate__animated animate__fadeInUp">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Edit Member: {{ $member->first_name }} {{ $member->last_name }}</h5>
-                    <a href="{{ route('member.index') }}" class="btn btn-sm btn-outline-primary btn-custom">
-                        <i class="ti ti-arrow-left"></i> Kembali
-                    </a>
+                        <a href="{{ route('member.index') }}" class="btn btn-sm btn-outline-custom">
+                <i class="ti ti-arrow-left"></i> Kembali
+            </a>
                 </div>
                 <div class="card-body">
                     <!-- Menampilkan Error Validasi -->
@@ -122,6 +122,21 @@
 
 <!-- Custom CSS (Sama seperti create) -->
 <style>
+    /* Ini adalah Potongan CSS untuk Tombol Kembali */
+.btn-outline-custom {
+    background: transparent;       /* Transparan saat diam */
+    border: 1px solid #5b86e5;     /* Garis biru */
+    color: #5b86e5;                /* Teks biru */
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-custom:hover {
+    background: linear-gradient(90deg, #36d1dc 0%, #5b86e5 100%); /* Gradient saat hover */
+    color: white;                  /* Teks jadi putih */
+    border-color: transparent;     /* Garis hilang */
+    transform: translateY(-2px);   /* Efek naik sedikit */
+}
     .btn-custom {
         background: linear-gradient(90deg, #36d1dc 0%, #5b86e5 100%);
         border: none;
@@ -184,5 +199,6 @@
         from { opacity: 0; transform: translate3d(0, -50%, 0); }
         to { opacity: 1; transform: none; }
     }
+    
 </style>
 @endsection

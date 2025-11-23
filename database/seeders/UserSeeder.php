@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'admin@mail.com'], // Kunci unik untuk dicari
             [
-                'name' => 'attar',
+                'name' => 'Algorhythm',
                 'password' => Hash::make('admin123'), // Password Anda
                 // created_at & updated_at akan diisi otomatis
             ]
