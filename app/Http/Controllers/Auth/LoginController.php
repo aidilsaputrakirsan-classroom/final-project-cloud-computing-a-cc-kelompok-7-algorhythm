@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // Import Fasad Auth
-use Illuminate\Http\RedirectResponse; // Import RedirectResponse
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 
 class LoginController extends Controller
 {
@@ -14,7 +14,6 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
-        // Pastikan Anda punya file 'login.blade.php' di folder resources/views
         return view('login');
     }
 
@@ -23,27 +22,34 @@ class LoginController extends Controller
      */
     public function authenticate(Request $request): RedirectResponse
     {
-        // 1. Validasi input (email dan password Wajib diisi)
+        // 1. Validasi input
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // 2. Coba lakukan login
-        // Kita juga tambahkan 'remember'
-        $remember = $request->has('remember'); // Cek apakah checkbox 'remember' dicentang
+        // 2. Cek "Remember Me"
+        $remember = $request->has('remember');
 
+        // 3. Proses Login
         if (Auth::attempt($credentials, $remember)) {
-            // 3. Jika berhasil
-            $request->session()->regenerate(); // Regenerate session untuk keamanan
+            $request->session()->regenerate();
 
-            // Arahkan user ke halaman yang tadinya ingin mereka tuju,
-            // atau default ke '/dashboard'
-            return redirect()->intended('dashboard');
+            // === BAGIAN YANG DIUPDATE (LOGIKA REDIRECT) ===
+            // Ambil data user yang sedang login
+            $user = Auth::user();
+
+            // Cek Role
+            if ($user->role === 'admin') {
+                return redirect()->route('dashboard'); // Admin ke Dashboard
+            }
+
+            // Jika bukan admin, ke Landing Page
+            return redirect()->route('landing');
+            // ==============================================
         }
 
         // 4. Jika gagal
-        // Kembalikan ke halaman login dengan pesan error
         return back()->with('error', 'Login gagal! Email atau password salah.');
     }
 
@@ -52,12 +58,10 @@ class LoginController extends Controller
      */
     public function logout(Request $request): RedirectResponse
     {
-        Auth::logout(); // Logout user
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        $request->session()->invalidate(); // Matikan session lama
-
-        $request->session()->regenerateToken(); // Buat token CSRF baru
-
-        return redirect('/'); // Arahkan kembali ke halaman utama (yang akan ke login)
+        return redirect('/'); 
     }
 }

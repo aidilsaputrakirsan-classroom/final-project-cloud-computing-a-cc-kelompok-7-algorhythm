@@ -3,36 +3,31 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\User; // <-- 1. Import model User
-use Illuminate\Support\Facades\Hash; // <-- 2. Import Hash
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // 3. Kita gunakan 'firstOrCreate'
-        // Ini akan mencari user dengan email 'admin@email.com'.
-        // Jika tidak ada, baru akan dibuat. Ini mencegah duplikat.
+        // 1. Buat Akun Admin
         User::firstOrCreate(
-            ['email' => 'admin@mail.com'], // Kunci unik untuk dicari
+            ['email' => 'admin@mail.com'],
             [
-                'name' => 'attar',
-                'password' => Hash::make('admin123'), // Password Anda
-                // created_at & updated_at akan diisi otomatis
+                'name' => 'Attar Admin',
+                'password' => Hash::make('admin123'),
+                'role' => 'admin', // Set role admin
             ]
         );
 
-        // Anda bisa tambahkan user lain di sini jika perlu
-        // User::firstOrCreate(
-        //     ['email' => 'user@email.com'],
-        //     [
-        //         'name' => 'User Biasa',
-        //         'password' => Hash::make('password')
-        //     ]
-        // );
+        // 2. Buat Akun User Biasa (Untuk Tes Landing Page)
+        User::firstOrCreate(
+            ['email' => 'user@mail.com'],
+            [
+                'name' => 'Pengunjung Perpus',
+                'password' => Hash::make('user123'),
+                'role' => 'user', // Set role user
+            ]
+        );
     }
 }
