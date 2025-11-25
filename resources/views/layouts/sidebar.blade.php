@@ -77,6 +77,14 @@
                         <span class="hide-menu">Pengembalian</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                <a class="sidebar-link {{ request()->routeIs('activity_logs.index') ? 'active' : '' }}" href="{{ route('activity_logs.index') }}" aria-expanded="false">
+                  <span>
+                  <i class="ti ti-history"></i>
+                    </span>
+                <span class="hide-menu">Activity Logs</span>
+                </a>
+                </li>
 
                 {{-- <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>

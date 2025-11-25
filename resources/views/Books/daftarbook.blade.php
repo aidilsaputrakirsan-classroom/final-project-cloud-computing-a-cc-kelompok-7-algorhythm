@@ -68,9 +68,9 @@
                                 <td>{{ optional($book->rack)->name ?? '0' }}</td>
                                 <td>{{ optional($book->bookStock)->jmlh_tersedia ?? '0' }}</td>
                                 <td>
-                                    <a href="{{ route('Books.showDetail', $book->id) }}" class="btn btn-custom btn-sm mt-1 animate__animated animate__fadeIn">
-                                        <i class="ti ti-eye"></i>
-                                    </a>
+                                    <a href="{{ route('books.showDetail', $book->id) }}" class="btn btn-custom btn-sm mt-1 animate__animated animate__fadeIn">
+    <i class="ti ti-eye"></i>
+</a>
                                     <a class="btn btn-custom btn-sm mt-1 animate__animated animate__fadeIn" data-bs-toggle="modal" data-bs-target="#editBookModal" data-book="{{ json_encode($book) }}">
                                         <i class="ti ti-pencil"></i>
                                     </a>

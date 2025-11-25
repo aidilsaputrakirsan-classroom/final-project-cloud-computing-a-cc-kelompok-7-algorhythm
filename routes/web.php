@@ -53,14 +53,22 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     });
 
     // Manajemen Buku
-    Route::prefix('books')->name('books.')->group(function() {
-        Route::get('/', [BookController::class, 'index'])->name('index');
-        Route::get('/create', [BookController::class, 'create'])->name('create');
-        Route::post('/', [BookController::class, 'store'])->name('store');
-        Route::get('/{id}/update', [BookController::class, 'getBook'])->name('getBook'); // Sedikit fix typo url
-        Route::put('/{book}', [BookController::class, 'update'])->name('update'); // Perbaiki penamaan route agar konsisten
-        Route::delete('/{id}', [BookController::class, 'destroy'])->name('destroy');
-    });
+Route::prefix('books')->name('books.')->group(function() {
+    Route::get('/', [BookController::class, 'index'])->name('index');
+    Route::get('/create', [BookController::class, 'create'])->name('create');
+    Route::post('/', [BookController::class, 'store'])->name('store');
+    
+    // Route Detail (Pastikan ada di dalam group ini)
+    Route::get('/{id}', [BookController::class, 'showDetail'])->name('showDetail'); 
+    
+    // Route Update & Delete
+    Route::get('/{id}/update', [BookController::class, 'getBook'])->name('getBook');
+    Route::put('/{book}', [BookController::class, 'update'])->name('update');
+    Route::delete('/{id}', [BookController::class, 'destroy'])->name('destroy');
+});
+
+// HAPUS atau KOMENTARI route duplikat di luar group (jika ada)
+// Route::get('/book/{id}/', ...); // <-- Hapus baris ini jika ada di luar group di file asli Anda
     
     // Detail Buku (Bisa diakses Admin, bisa juga dipindah ke publik jika perlu)
     Route::get('/book/{id}/', [BookController::class, 'showDetail'])->name('books.showDetail');
@@ -101,6 +109,10 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::delete('pengembalian/hapus/{id}', [PengembalianController::class, 'hapus'])->name('pengembalian.hapus');
 
 });
+
+// Activity Logs
+Route::get('/activity-logs', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity_logs.index');
+Route::get('/activity-logs/{id}', [App\Http\Controllers\ActivityLogController::class, 'show'])->name('activity_logs.show');
 
 // ====================================================
 // 4. RUTE USER (OPSIONAL / JIKA LOGIN SEBAGAI USER)
