@@ -9,7 +9,7 @@ class ActivityLogController extends Controller
 {
     public function index()
     {
-        // Mengambil semua data log, diurutkan dari yang terbaru
+        // Fetch logs with user data (causer), ordered by newest first
         $activities = Activity::with('causer')->latest()->paginate(10);
 
         return view('activity_log.index', compact('activities'));
