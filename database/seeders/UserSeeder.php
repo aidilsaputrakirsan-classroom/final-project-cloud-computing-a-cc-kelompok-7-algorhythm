@@ -13,26 +13,25 @@ class UserSeeder extends Seeder
      * Run the database seeds.
      */
     public function run(): void
-    {
-        // 3. Kita gunakan 'firstOrCreate'
-        // Ini akan mencari user dengan email 'admin@email.com'.
-        // Jika tidak ada, baru akan dibuat. Ini mencegah duplikat.
-        User::firstOrCreate(
-            ['email' => 'admin@mail.com'], // Kunci unik untuk dicari
-            [
-                'name' => 'Algorhythm',
-                'password' => Hash::make('admin123'), // Password Anda
-                // created_at & updated_at akan diisi otomatis
-            ]
-        );
+{
+    // 1. Buat Akun Admin
+    User::firstOrCreate(
+        ['email' => 'admin@mail.com'],
+        [
+            'name' => 'Administrator',
+            'password' => Hash::make('admin123'),
+            'role' => 'admin', // Role Admin
+        ]
+    );
 
-        // Anda bisa tambahkan user lain di sini jika perlu
-        // User::firstOrCreate(
-        //     ['email' => 'user@email.com'],
-        //     [
-        //         'name' => 'User Biasa',
-        //         'password' => Hash::make('password')
-        //     ]
-        // );
-    }
+    // 2. Buat Akun User Biasa
+    User::firstOrCreate(
+        ['email' => 'user@mail.com'],
+        [
+            'name' => 'Pengunjung',
+            'password' => Hash::make('user123'),
+            'role' => 'user', // Role User
+        ]
+    );
+}
 }

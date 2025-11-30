@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth; // Tambahan import Auth
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RakbukuController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LandingController; // <-- Tambahan Controller Landing Page
 
 /*
 |--------------------------------------------------------------------------
@@ -16,27 +18,39 @@ use App\Http\Controllers\DashboardController;
 |--------------------------------------------------------------------------
 */
 
-// Rute Halaman Utama
-Route::get('/', function () {
-    if (auth()->check()) {
-        return redirect()->route('dashboard');
-    }
-    return redirect()->route('login');
-});
+// ====================================================
+// 1. RUTE PUBLIK (Bisa diakses siapa saja)
+// ====================================================
 
-// === GRUP AUTENTIKASI (RUTE PUBLIK) ===
-// Rute-rute ini BISA diakses tanpa login
+// Halaman Utama mengarah ke Landing Controller
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+
+// Authentication Routes
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
 
-// === RUTE YANG DILINDUNGI (SEMUA DI DALAM GRUP INI) ===
-// Rute-rute ini WAJIB login.
-// Jika belum login, akan dilempar ke rute 'login'
+// ====================================================
+// 2. RUTE USER & ADMIN (Harus Login)
+// ====================================================
 Route::middleware(['auth'])->group(function () {
+    
+    // Fitur yang bisa diakses oleh User Biasa DAN Admin
+    // (Misalnya: Melihat detail buku dari Landing Page)
+    Route::get('/book/{id}/', [BookController::class, 'showDetail'])->name('Books.showDetail');
 
-    // Dashboard
+    // Jika user punya halaman profil, bisa ditambahkan di sini
+});
+
+
+// ====================================================
+// 3. RUTE KHUSUS ADMIN (Middleware 'is_admin')
+// ====================================================
+// Hanya role 'admin' yang bisa akses route di dalam grup ini.
+Route::middleware(['auth', 'is_admin'])->group(function () {
+
+    // Dashboard Admin
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Route untuk Member
@@ -47,13 +61,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/member/{id}', [MemberController::class, 'update'])->name('member.update');
     Route::delete('/member/{id}', [MemberController::class, 'destroy'])->name('member.destroy');
 
-    // Daftar buku
+    // Daftar buku (Kecuali showDetail yang sudah ada di atas)
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
     Route::get('/books/{id}/edit', [BookController::class, 'edit'])->name('books.edit');
     Route::put('/books/{id}', [BookController::class, 'update'])->name('books.update');
-    Route::get('/book/{id}/', [BookController::class, 'showDetail'])->name('Books.showDetail');
     Route::delete('/books/{id}', [BookController::class, 'destroy'])->name('books.destroy');
 
     // Rak Buku
@@ -67,13 +80,13 @@ Route::middleware(['auth'])->group(function () {
     // Kategori Buku
     Route::get('/categories', [KategoriController::class, 'index'])->name('categories.index');
     Route::get('/categories/create', [KategoriController::class, 'create'])->name('categories.create');
-    Route::post('/categories', [KategoriController::class, 'store'])->name('categories.store'); // URI standar biasanya '/categories' bukan '/categories/create' untuk post
+    Route::post('/categories', [KategoriController::class, 'store'])->name('categories.store');
     Route::get('/categories/{category}/edit', [KategoriController::class, 'edit'])->name('categories.edit');
     Route::put('/categories/{category}', [KategoriController::class, 'update'])->name('categories.update');
     Route::delete('/categories/{category}', [KategoriController::class, 'destroy'])->name('categories.destroy');
     Route::get('/categories/{category}', [KategoriController::class, 'show'])->name('categories.show');
 
-    //Peminjaman
+    // Peminjaman
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');
     Route::get('/peminjaman/search', [PeminjamanController::class, 'search'])->name('Peminjaman.search');
     Route::get('/search-books', [PeminjamanController::class, 'searchBookPage'])->name('search.book.page');
@@ -88,4 +101,4 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/pengembalian/simpan/{peminjaman}', [PengembalianController::class, 'simpan'])->name('pengembalian.simpan');
     Route::delete('pengembalian/hapus/{id}', [PengembalianController::class, 'hapus'])->name('pengembalian.hapus');
 
-}); // <-- SEMUA RUTE BERAKHIR DI DALAM GROUP INI
+});
