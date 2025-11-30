@@ -76,38 +76,53 @@
                     <div class="card h-100 border-0 shadow-sm hover-top rounded-4 overflow-hidden">
                         <div class="position-relative overflow-hidden group">
                             <div style="height: 280px; background: #f8f9fa;" class="d-flex align-items-center justify-content-center overflow-hidden">
-                                {{-- PERBAIKAN: Hapus 'storage/' karena file ada di folder public biasa --}}
                                 @if($book->book_cover && file_exists(public_path($book->book_cover)))
-                                    <img src="{{ asset($book->book_cover) }}" class="w-100 h-100" style="object-fit: cover; transition: transform 0.3s;" alt="{{ $book->title }}">
+                                    <img src="{{ asset($book->book_cover) }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ $book->title }}">
                                 @else
                                     <div class="text-center text-muted">
                                         <i class="ti ti-book-2 fs-1"></i>
-                                        <p class="small mt-2 mb-0">Cover Tidak Tersedia</p>
+                                        <p class="small mt-2 mb-0">No Cover</p>
                                     </div>
                                 @endif
                             </div>
                             
-                            <div class="card-img-overlay d-flex flex-column justify-content-end p-3 opacity-0 group-hover-opacity transition-all" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
-                                <a href="{{ route('books.public.detail', $book->id) }}" class="btn btn-light text-primary fw-bold w-100 rounded-pill shadow-sm">Detail Buku</a>
+                            <div class="card-img-overlay d-flex flex-column justify-content-center align-items-center gap-2 p-3 opacity-0 group-hover-opacity transition-all" style="background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px);">
+                                
+                                <a href="{{ route('books.public.detail', $book->id) }}" class="btn btn-light text-primary fw-bold rounded-pill shadow-sm w-75">
+                                    Detail Buku
+                                </a>
+
+                                @auth
+                                    <form action="{{ route('bookmark.toggle', $book->id) }}" method="POST" class="w-75">
+                                        @csrf
+                                        <button type="submit" class="btn {{ Auth::user()->bookmarks->contains($book->id) ? 'btn-danger' : 'btn-outline-light' }} fw-bold rounded-pill shadow-sm w-100">
+                                            <i class="ti ti-heart {{ Auth::user()->bookmarks->contains($book->id) ? 'text-white' : '' }}"></i> 
+                                            {{ Auth::user()->bookmarks->contains($book->id) ? 'Disimpan' : 'Simpan' }}
+                                        </button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('login') }}" class="btn btn-outline-light fw-bold rounded-pill shadow-sm w-75">
+                                        <i class="ti ti-heart"></i> Simpan
+                                    </a>
+                                @endauth
+
                             </div>
                         </div>
 
                         <div class="card-body p-3">
-                            {{-- PERBAIKAN: Menggunakan 'title' sesuai database --}}
                             <h6 class="card-title fw-bold text-dark mb-1 text-truncate" title="{{ $book->title }}">
                                 {{ $book->title }}
                             </h6>
-                            
-                            {{-- PERBAIKAN: Menggunakan 'author' sesuai database --}}
                             <p class="card-text text-muted small mb-2">
                                 <i class="ti ti-edit me-1"></i> {{ $book->author }}
                             </p>
-                            
                             <div class="d-flex align-items-center justify-content-between mt-3 pt-3 border-top">
                                 <div class="small text-muted">
-                                    {{-- Pastikan relasi kategori ada di model, atau hapus baris ini jika error --}}
-                                    <span class="badge bg-light-primary text-primary">{{ $book->category->name_category ?? 'Umum' }}</span>
+                                    Stok: <span class="fw-bold text-dark">{{ $book->bookStock->jmlh_tersedia ?? 0 }}</span>
                                 </div>
+                                <span class="badge bg-primary text-white px-3 py-2 rounded-pill mb-2 shadow-sm">
+    {{ $book->category->name ?? 'Umum' }}
+</span>
                             </div>
                         </div>
                     </div>

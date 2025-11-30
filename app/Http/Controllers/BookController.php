@@ -183,12 +183,13 @@ class BookController extends Controller
 
     // Tambahkan function ini di dalam BookController class
     // Method baru untuk menampilkan detail buku di layout Landing Page
+    // Tambahkan method ini di dalam class BookController
     public function showPublicDetail($id)
     {
-        // Ambil buku beserta relasinya
+        // Ambil data buku berdasarkan ID
         $book = Book::with(['category', 'rack'])->findOrFail($id);
-        
-        // Arahkan ke view khusus (yang akan kita buat di langkah C)
+
+        // Arahkan ke View khusus publik (bukan showDetail yang lama)
         return view('Books.public_detail', compact('book'));
     }
 }

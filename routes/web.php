@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth; // Tambahan import Auth
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RakbukuController;
@@ -10,7 +10,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\LandingController; // <-- Tambahan Controller Landing Page
+use App\Http\Controllers\LandingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +22,12 @@ use App\Http\Controllers\LandingController; // <-- Tambahan Controller Landing P
 // 1. RUTE PUBLIK (Bisa diakses siapa saja)
 // ====================================================
 
-// Halaman Utama mengarah ke Landing Controller
+// Halaman Utama
 Route::get('/', [LandingController::class, 'index'])->name('landing');
+
+// DETAIL BUKU PUBLIK (PINDAHKAN KE SINI)
+// Ini agar guest/pengunjung bisa melihat detail tanpa login
+Route::get('/buku/{id}', [BookController::class, 'showPublicDetail'])->name('books.public.detail');
 
 // Authentication Routes
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -36,18 +40,20 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 // ====================================================
 Route::middleware(['auth'])->group(function () {
     
-    // Fitur yang bisa diakses oleh User Biasa DAN Admin
-    // (Misalnya: Melihat detail buku dari Landing Page)
+    // Rute ini opsional, bisa dihapus jika sudah pakai yang public di atas.
+    // Tapi jika ingin Admin punya tampilan detail beda, biarkan saja.
     Route::get('/book/{id}/', [BookController::class, 'showDetail'])->name('Books.showDetail');
+    // Route Toggle Bookmark (Tombol Love)
+    Route::post('/bookmark/{id}', [App\Http\Controllers\BookmarkController::class, 'toggle'])->name('bookmark.toggle');
 
-    // Jika user punya halaman profil, bisa ditambahkan di sini
+    Route::get('/koleksi-saya', [App\Http\Controllers\BookmarkController::class, 'index'])->name('bookmarks.index');
+
 });
 
 
 // ====================================================
 // 3. RUTE KHUSUS ADMIN (Middleware 'is_admin')
 // ====================================================
-// Hanya role 'admin' yang bisa akses route di dalam grup ini.
 Route::middleware(['auth', 'is_admin'])->group(function () {
 
     // Dashboard Admin
@@ -61,8 +67,7 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::put('/member/{id}', [MemberController::class, 'update'])->name('member.update');
     Route::delete('/member/{id}', [MemberController::class, 'destroy'])->name('member.destroy');
 
-    // Daftar buku (Kecuali showDetail yang sudah ada di atas)
-    Route::get('/buku/{id}', [BookController::class, 'showPublicDetail'])->name('books.public.detail');
+    // Daftar buku (HAPUS RUTE '/buku/{id}' DARI SINI)
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
@@ -70,6 +75,8 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::put('/books/{id}', [BookController::class, 'update'])->name('books.update');
     Route::delete('/books/{id}', [BookController::class, 'destroy'])->name('books.destroy');
 
+    // ... (Sisa routing Rak, Kategori, Peminjaman, dll biarkan sama) ...
+    
     // Rak Buku
     Route::get('/rak', [RakbukuController::class, 'index'])->name('Rak.showdata');
     Route::get('/rak/create', [RakbukuController::class, 'create'])->name('Rak.createRak');

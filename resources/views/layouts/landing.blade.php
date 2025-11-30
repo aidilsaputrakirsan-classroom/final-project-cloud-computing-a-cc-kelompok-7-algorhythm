@@ -67,13 +67,22 @@
                                     <i class="ti ti-user fs-4 me-1"></i> Hai, {{ Auth::user()->name }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
-                                    {{-- Jika Admin, munculkan tombol ke Dashboard --}}
+                                    {{-- Menu Dashboard (Khusus Admin) --}}
                                     @if(Auth::user()->isAdmin())
                                         <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="ti ti-layout-dashboard me-2"></i>Dashboard Admin</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                     @endif
                                     
-                                    {{-- Tombol Logout --}}
+                                    {{-- MENU BARU: Koleksi Saya (Semua User Login) --}}
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('bookmarks.index') }}">
+                                            <i class="ti ti-bookmarks me-2"></i> Koleksi Saya
+                                        </a>
+                                    </li>
+                                    
+                                    <li><hr class="dropdown-divider"></li>
+
+                                    {{-- Logout --}}
                                     <li>
                                         <form action="{{ route('logout') }}" method="POST">
                                             @csrf
