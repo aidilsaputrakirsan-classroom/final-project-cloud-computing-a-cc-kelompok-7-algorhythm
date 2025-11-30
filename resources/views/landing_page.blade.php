@@ -75,32 +75,38 @@
                 <div class="col-6 col-md-3">
                     <div class="card h-100 border-0 shadow-sm hover-top rounded-4 overflow-hidden">
                         <div class="position-relative overflow-hidden group">
-                            <div style="height: 280px; background: #e9ecef;" class="d-flex align-items-center justify-content-center">
-                                @if($book->cover_book)
-                                    <img src="{{ asset('storage/'.$book->cover_book) }}" class="card-img-top h-100 w-100" style="object-fit: cover;" alt="{{ $book->title_book }}">
+                            <div style="height: 280px; background: #f8f9fa;" class="d-flex align-items-center justify-content-center overflow-hidden">
+                                {{-- PERBAIKAN: Hapus 'storage/' karena file ada di folder public biasa --}}
+                                @if($book->book_cover && file_exists(public_path($book->book_cover)))
+                                    <img src="{{ asset($book->book_cover) }}" class="w-100 h-100" style="object-fit: cover; transition: transform 0.3s;" alt="{{ $book->title }}">
                                 @else
                                     <div class="text-center text-muted">
-                                        <i class="fs-1">📖</i>
-                                        <p class="small mt-2">No Cover</p>
+                                        <i class="ti ti-book-2 fs-1"></i>
+                                        <p class="small mt-2 mb-0">Cover Tidak Tersedia</p>
                                     </div>
                                 @endif
                             </div>
                             
                             <div class="card-img-overlay d-flex flex-column justify-content-end p-3 opacity-0 group-hover-opacity transition-all" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
-                                <a href="{{ route('books.showDetail', $book->id) }}" class="btn btn-light text-primary fw-bold w-100 rounded-pill shadow-sm">Detail Buku</a>
+                                <a href="{{ route('books.public.detail', $book->id) }}" class="btn btn-light text-primary fw-bold w-100 rounded-pill shadow-sm">Detail Buku</a>
                             </div>
                         </div>
 
                         <div class="card-body p-3">
-                            <h6 class="card-title fw-bold text-dark mb-1 text-truncate" title="{{ $book->title_book }}">
-                                {{ $book->title_book }}
+                            {{-- PERBAIKAN: Menggunakan 'title' sesuai database --}}
+                            <h6 class="card-title fw-bold text-dark mb-1 text-truncate" title="{{ $book->title }}">
+                                {{ $book->title }}
                             </h6>
+                            
+                            {{-- PERBAIKAN: Menggunakan 'author' sesuai database --}}
                             <p class="card-text text-muted small mb-2">
-                                {{ $book->author }}
+                                <i class="ti ti-edit me-1"></i> {{ $book->author }}
                             </p>
+                            
                             <div class="d-flex align-items-center justify-content-between mt-3 pt-3 border-top">
                                 <div class="small text-muted">
-                                    Stok: <span class="fw-bold text-dark">{{ $book->stock }}</span>
+                                    {{-- Pastikan relasi kategori ada di model, atau hapus baris ini jika error --}}
+                                    <span class="badge bg-light-primary text-primary">{{ $book->category->name_category ?? 'Umum' }}</span>
                                 </div>
                             </div>
                         </div>

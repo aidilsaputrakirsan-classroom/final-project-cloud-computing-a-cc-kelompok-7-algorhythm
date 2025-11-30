@@ -180,4 +180,15 @@ class BookController extends Controller
 
         return redirect()->route('books.index')->with('msg', 'Book deleted successfully');
     }
+
+    // Tambahkan function ini di dalam BookController class
+    // Method baru untuk menampilkan detail buku di layout Landing Page
+    public function showPublicDetail($id)
+    {
+        // Ambil buku beserta relasinya
+        $book = Book::with(['category', 'rack'])->findOrFail($id);
+        
+        // Arahkan ke view khusus (yang akan kita buat di langkah C)
+        return view('Books.public_detail', compact('book'));
+    }
 }

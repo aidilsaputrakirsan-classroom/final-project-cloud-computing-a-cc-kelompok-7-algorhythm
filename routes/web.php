@@ -62,6 +62,7 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::delete('/member/{id}', [MemberController::class, 'destroy'])->name('member.destroy');
 
     // Daftar buku (Kecuali showDetail yang sudah ada di atas)
+    Route::get('/buku/{id}', [BookController::class, 'showPublicDetail'])->name('books.public.detail');
     Route::get('/books', [BookController::class, 'index'])->name('books.index');
     Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
