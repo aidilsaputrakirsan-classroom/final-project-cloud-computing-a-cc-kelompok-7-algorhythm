@@ -11,6 +11,7 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,11 @@ Route::get('/', [LandingController::class, 'index'])->name('landing');
 // DETAIL BUKU PUBLIK (PINDAHKAN KE SINI)
 // Ini agar guest/pengunjung bisa melihat detail tanpa login
 Route::get('/buku/{id}', [BookController::class, 'showPublicDetail'])->name('books.public.detail');
+
+
+// Route Register (Tambahan Baru)
+Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('register', [RegisterController::class, 'register'])->name('register.perform');
 
 // Authentication Routes
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
