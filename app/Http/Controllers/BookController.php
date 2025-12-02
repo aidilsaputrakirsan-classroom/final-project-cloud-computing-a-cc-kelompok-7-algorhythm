@@ -9,6 +9,7 @@ use App\Models\BookStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
+use App\Models\ActivityLog;
 
 class BookController extends Controller
 {
@@ -66,6 +67,13 @@ class BookController extends Controller
         // 4. Simpan Buku (Gunakan create agar ID langsung terbentuk)
         // Pastikan di Model Book.php property $guarded = []; atau $fillable sudah diisi
         $book = Book::create($data);
+
+        // REKAM LOG DI SINI
+    ActivityLog::record(
+        'CREATE', 
+        'Menambahkan buku baru: ' . $book->title, 
+        ['isbn' => $book->isbn, 'stok' => $request->jmlh_tersedia] // Detail opsional
+    );
 
         // 5. Simpan Stok Buku
         // Karena $book sudah dicreate, $book->id pasti ada
@@ -178,8 +186,13 @@ class BookController extends Controller
         // Jika tidak cascade, hapus manual: $book->bookStock()->delete();
         $book->delete();
 
+        // REKAM LOG
+    ActivityLog::record('DELETE', 'Menghapus buku: ' . $book->title);
+
         return redirect()->route('books.index')->with('msg', 'Book deleted successfully');
     }
+
+    
 
     // Tambahkan function ini di dalam BookController class
     // Method baru untuk menampilkan detail buku di layout Landing Page

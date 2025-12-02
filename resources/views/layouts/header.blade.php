@@ -15,8 +15,8 @@
                     <a class="nav-link nav-icon-hover profile-icon" href="javascript:void(0)" id="drop2"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <!-- Ganti dengan path ke gambar profile admin Anda -->
-                        <img src="{{ asset('assets/images/profile/user-1.jpg') }}" alt="User Profile" width="35"
-                            height="35" class="rounded-circle profile-image">
+                        <img src="{{ asset('assets/images/logos/favicon.png') }}" alt="Perpustakaan" width="35"
+    height="35" class="rounded-circle profile-image p-1 border">
                     </a>
                     <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                         <div class="message-body">

@@ -40,7 +40,8 @@
                                 <p class="text-muted mb-0">Koleksi Buku</p>
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0 border-start border-end">
-                                <h4 class="fw-bold text-dark">{{ \App\Models\User::where('role', 'user')->count() }}</h4>
+                                {{-- Gunakan variabel dari Controller --}}
+                                <h4 class="fw-bold text-dark">{{ $totalUsers }}</h4>
                                 <p class="text-muted mb-0">Anggota Aktif</p>
                             </div>
                             <div class="col-md-4">

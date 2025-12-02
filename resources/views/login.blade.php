@@ -126,9 +126,7 @@
       <!-- Anda bisa tambahkan link ke halaman register manual nanti jika perlu -->
       <p class="mt-10 text-center text-sm text-gray-500">
         Belum punya akun?
-        <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-          Hubungi administrator
-        </a>
+        <a href="{{ route('register') }}" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Daftar di sini</a>
       </p>
     </div>
   </div>
