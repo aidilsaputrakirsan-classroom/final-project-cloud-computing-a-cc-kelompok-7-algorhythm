@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB; // Tambahkan ini agar DB::raw berfungsi
+use Illuminate\Support\Facades\DB;
+use App\Models\ActivityLog; // <--- PENTING: Import Model
 
 class KategoriController extends Controller
 {
@@ -21,7 +22,6 @@ class KategoriController extends Controller
             ->where('name', 'like', '%' . $search . '%')
             ->get();
 
-        // Pastikan nama view ini sesuai dengan file Anda
         return view('kategori.showkategori', compact('categories'));
     }
 
@@ -44,20 +44,23 @@ class KategoriController extends Controller
             return redirect()->back()->with('msg', 'Nama kategori sudah ada')->withInput();
         }
 
-        Kategori::create([
+        $kategori = Kategori::create([
             'name' => $request->input('name'),
         ]);
+
+        // --- REKAM LOG ---
+        ActivityLog::record(
+            'CREATE',
+            'Menambahkan Kategori Baru: ' . $kategori->name
+        );
+        // -----------------
 
         return redirect()->route('categories.index')->with('msg', 'Kategori berhasil ditambahkan');
     }
 
-    // --- [INI YANG DITAMBAHKAN] ---
-public function edit($id)
+    public function edit($id)
     {
         $category = Kategori::findOrFail($id);
-        
-        // PERBAIKAN: Mengganti 'categories.edit' menjadi 'kategori.edit'
-        // Pastikan file edit.blade.php sudah Anda buat di dalam folder resources/views/kategori/
         return view('kategori.edit', compact('category'));
     }
 
@@ -72,8 +75,18 @@ public function edit($id)
         }
 
         $category = Kategori::findOrFail($id);
+        $oldName = $category->name;
+        
         $category->name = $request->input('name');
         $category->save();
+
+        // --- REKAM LOG ---
+        ActivityLog::record(
+            'UPDATE',
+            'Memperbarui Kategori: ' . $oldName,
+            ['nama_baru' => $category->name]
+        );
+        // -----------------
 
         return redirect()->route('categories.index')->with('msg', 'Kategori berhasil diperbarui');
     }
@@ -84,7 +97,16 @@ public function edit($id)
         if ($category->books()->count() > 0) {
             return redirect()->route('categories.index')->with('error', 'Kategori tidak dapat dihapus karena masih memiliki buku');
         }
+        
+        $namaKategori = $category->name;
         $category->delete();
+
+        // --- REKAM LOG ---
+        ActivityLog::record(
+            'DELETE',
+            'Menghapus Kategori: ' . $namaKategori
+        );
+        // -----------------
 
         return redirect()->route('categories.index')->with('msg', 'Kategori berhasil dihapus');
     }

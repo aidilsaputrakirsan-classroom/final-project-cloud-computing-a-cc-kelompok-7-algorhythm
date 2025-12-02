@@ -59,6 +59,9 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     // Dashboard Admin
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Activity Logs Route
+    Route::get('/activity-logs', [App\Http\Controllers\ActivityLogController::class, 'index'])->name('activity_logs.index');
+
     // Route untuk Member
     Route::get('/member', [MemberController::class, 'index'])->name('member.index');
     Route::get('/member/create', [MemberController::class, 'create'])->name('member.create');

@@ -43,10 +43,15 @@
     <div class="wrapper">
         <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm navbar-landing py-3">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center" href="{{ route('landing') }}">
-                    {{-- Sesuaikan path logo Anda --}}
-                    <img src="{{ asset('assets/images/logos/dark-logo.svg') }}" width="150" alt="Logo" class="d-inline-block align-text-top">
-                </a>
+                <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('landing') }}">
+    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+        <i class="ti ti-book text-white fs-4"></i>
+    </div>
+    <div class="d-flex flex-column" style="line-height: 1.1;">
+        <span class="fw-bold text-dark fs-5">Perpustakaan</span>
+        <small class="text-primary fw-bold" style="font-size: 0.75rem; letter-spacing: 1px;">DIGITAL</small>
+    </div>
+</a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
