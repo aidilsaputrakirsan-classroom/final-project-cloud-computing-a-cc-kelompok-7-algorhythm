@@ -3,103 +3,190 @@
 @section('title', 'Detail Buku')
 
 @section('content')
-    <div class="container mt-5 animate__animated animate__fadeIn">
-        <a href="{{ route('books.index') }}" class="btn btn-outline-primary mb-3 animate__animated animate__fadeInLeft btn-hover-pulse">
-            <i class="ti ti-arrow-left"></i>
-            Kembali
-        </a>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card shadow-lg animate__animated animate__zoomIn card-hover-zoom">
-                    <div class="card-header bg-primary text-white position-relative">
-                        <h4 class="card-title mb-0 animate__animated animate__fadeInDown">{{ $book->title }} ({{ $book->year }})</h4>
-                        <div class="header-overlay"></div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4 animate__animated animate__fadeInLeft">
-                                <img class="img-fluid rounded img-hover-zoom" src="{{ asset($book->book_cover) }}" alt="{{ $book->title }}">
+<div class="container mt-4 animate__animated animate__fadeIn">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm animate__animated animate__fadeInUp">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Detail Buku: {{ $book->title }}</h5>
+                   <a href="{{ route('member.index') }}" class="btn btn-sm btn-outline-custom">
+    <i class="ti ti-arrow-left"></i> Kembali
+</a>
+                </div>
+                
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Judul Buku</label>
+                                <div class="form-control-plaintext border rounded px-3 py-2" style="background-color: #f8f9fa;">
+                                    {{ $book->title }}
+                                </div>
                             </div>
-                            <div class="col-md-8 animate__animated animate__fadeInRight">
-                                <p><strong>Judul:</strong> {{ $book->title }}</p>
-                                <p><strong>Penulis:</strong> {{ $book->author }}</p>
-                                <p><strong>Penerbit:</strong> {{ $book->publisher }}</p>
-                                <p><strong>ISBN:</strong> {{ $book->isbn }}</p>
-                                <p><strong>Kategori:</strong> {{ optional($book->category)->name }}</p>
-                                <p><strong>Rak:</strong> {{ optional($book->rack)->name }}</p>
-                                <p><strong>Jumlah Tersedia:</strong> {{ optional($book->bookStock)->jmlh_tersedia }}</p>
-                                <p><strong>Deskripsi:</strong> {{ $book->description }}</p>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Penulis</label>
+                                <div class="form-control-plaintext border rounded px-3 py-2" style="background-color: #f8f9fa;">
+                                    {{ $book->author }}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Penerbit</label>
+                                <div class="form-control-plaintext border rounded px-3 py-2" style="background-color: #f8f9fa;">
+                                    {{ $book->publisher }}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Tahun</label>
+                                    <div class="form-control-plaintext border rounded px-3 py-2" style="background-color: #f8f9fa;">
+                                        {{ $book->year }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">ISBN</label>
+                                    <div class="form-control-plaintext border rounded px-3 py-2" style="background-color: #f8f9fa;">
+                                        {{ $book->isbn }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Kategori</label>
+                                <div class="form-control-plaintext border rounded px-3 py-2" style="background-color: #f8f9fa;">
+                                    {{ optional($book->category)->name ?? '-' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Lokasi Rak</label>
+                                    <div class="form-control-plaintext border rounded px-3 py-2" style="background-color: #f8f9fa;">
+                                        {{ optional($book->rack)->name ?? '-' }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Stok</label>
+                                    <div class="form-control-plaintext border rounded px-3 py-2" style="background-color: #f8f9fa;">
+                                        {{ optional($book->bookStock)->jmlh_tersedia ?? 0 }} Pcs
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Cover Buku</label>
+                                <div class="mt-1 text-center">
+                                    @if($book->book_cover)
+                                        <img src="{{ asset($book->book_cover) }}" alt="{{ $book->title }}" class="img-fluid shadow-sm" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; border: 1px solid #dee2e6;">
+                                    @else
+                                        <div class="border rounded d-flex align-items-center justify-content-center text-muted mx-auto" style="height: 250px; width: 100%; background-color: #f8f9fa;">
+                                            No Cover
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Deskripsi</label>
+                                <div class="form-control-plaintext border rounded px-3 py-2" style="background-color: #f8f9fa; min-height: 80px; text-align: justify;">
+                                    {{ $book->description }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a href="{{ route('books.edit', $book->id) }}" class="btn btn-primary btn-custom">
+                            <i class="ti ti-pencil"></i> Edit Buku Ini
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Custom CSS -->
-    <style>
-        .btn-hover-pulse {
-            position: relative;
-            overflow: hidden;
-        }
+<style>
+    /* Ini adalah Potongan CSS untuk Tombol Kembali */
+.btn-outline-custom {
+    background: transparent;       /* Transparan saat diam */
+    border: 1px solid #5b86e5;     /* Garis biru */
+    color: #5b86e5;                /* Teks biru */
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
 
-        .btn-hover-pulse::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 300%;
-            height: 300%;
-            background: rgba(255, 255, 255, 0.15);
-            transition: all 0.3s ease;
-            border-radius: 50%;
-            z-index: 0;
-            transform: translate(-50%, -50%) scale(0);
-        }
-
-        .btn-hover-pulse:hover::before {
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .card-hover-zoom {
-            transition: transform 0.3s ease;
-        }
-
-        .card-hover-zoom:hover {
-            transform: scale(1.03);
-        }
-
-        .img-hover-zoom {
-            transition: transform 0.3s ease;
-        }
-
-        .img-hover-zoom:hover {
-            transform: scale(1.1);
-        }
-
-        .card-header {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, rgba(58, 123, 213, 1) 0%, rgba(0, 212, 255, 1) 100%);
-        }
-
-        .card-header::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, rgba(58, 123, 213, 1) 0%, rgba(0, 212, 255, 1) 100%);
-        }
-    </style>
+.btn-outline-custom:hover {
+    background: linear-gradient(90deg, #36d1dc 0%, #5b86e5 100%); /* Gradient saat hover */
+    color: white;                  /* Teks jadi putih */
+    border-color: transparent;     /* Garis hilang */
+    transform: translateY(-2px);   /* Efek naik sedikit */
+}
+    .btn-custom {
+        background: linear-gradient(90deg, #36d1dc 0%, #5b86e5 100%);
+        border: none;
+        color: white;
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+    .btn-custom:hover {
+        background: linear-gradient(90deg, #5b86e5 0%, #36d1dc 100%);
+    }
+    .btn-outline-primary.btn-custom {
+        background: transparent;
+        border-color: #5b86e5;
+        color: #5b86e5;
+    }
+    .btn-outline-primary.btn-custom:hover {
+        background: linear-gradient(90deg, #5b86e5 0%, #36d1dc 100%);
+        color: white;
+        border-color: #5b86e5;
+    }
+    .btn-close.btn-custom {
+        padding: 0;
+        border: none;
+        background: none;
+    }
+    .card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    }
+    .card-title {
+        color: #333;
+    }
+    .form-control-plaintext {
+        border-radius: 10px !important;
+        border-color: #ced4da !important;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .animate__animated {
+        animation-duration: 0.5s;
+    }
+    .animate__fadeInUp { animation-name: fadeInUp; }
+    .animate__fadeInDown { animation-name: fadeInDown; }
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translate3d(0, 50%, 0); }
+        to { opacity: 1; transform: none; }
+    }
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translate3d(0, -50%, 0); }
+        to { opacity: 1; transform: none; }
+    }
+</style>
 @endsection

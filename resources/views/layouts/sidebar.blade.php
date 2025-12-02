@@ -115,10 +115,27 @@
                 </li>
             
                 <li class="sidebar-item">
+                    <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('Rak.showdata') }}" aria-expanded="false">
                         <span><i class="ti ti-columns"></i></span>
                         <span class="hide-menu">Rak</span>
                     </a>
+                </li>
+                <li class="nav-small-cap">
+                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                    <span class="hide-menu">Auth</span>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="#" aria-expanded="false" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <span>
+                            <i class="ti ti-logout"></i>
+                        </span>
+                        <span class="hide-menu">Logout</span>
+                    </a>
+                    
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
                 </li>
             </ul>
         </nav>

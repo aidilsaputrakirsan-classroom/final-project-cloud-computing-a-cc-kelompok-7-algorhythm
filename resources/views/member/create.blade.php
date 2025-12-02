@@ -7,16 +7,16 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm animate__animated animate__fadeInUp">
-                <!-- Header Card (Sekarang Putih) -->
+                
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Tambah Member Baru</h5>
-                    <!-- Tombol Kembali (Sekarang Biru Gradient) -->
-                    <a href="{{ route('member.index') }}" class="btn btn-custom">
+                    
+                    <a href="{{ route('member.index') }}" class="btn btn-sm btn-outline-custom">
                         <i class="ti ti-arrow-left"></i> Kembali
                     </a>
                 </div>
+
                 <div class="card-body">
-                    <!-- Menampilkan Error Validasi -->
                     @if ($errors->any())
                         <div class="alert alert-danger alert-dismissible fade show animate__animated animate__fadeInDown" role="alert">
                             <strong>Oops! Terjadi kesalahan:</strong>
@@ -25,22 +25,20 @@
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
-                            <button type="button" class="btn-close btn-custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close btn-custom" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
                     
                     @if (session('error'))
                        <div class="alert alert-danger alert-dismissible fade show animate__animated animate__fadeInDown" role="alert">
                            {{ session('error') }}
-                           <button type="button" class="btn-close btn-custom-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                           <button type="button" class="btn-close btn-custom" data-bs-dismiss="alert" aria-label="Close"></button>
                        </div>
                     @endif
 
-                    <!-- Formulir -->
                     <form action="{{ route('member.store') }}" method="post" id="form-member" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
-                            <!-- Kolom Kiri: Info Personal -->
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="first_name" class="form-label">Nama Depan</label>
@@ -67,7 +65,6 @@
                                 </div>
                             </div>
 
-                            <!-- Kolom Kanan: Info Kontak & Foto -->
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="phone" class="form-label">Telepon</label>
@@ -95,7 +92,6 @@
                             </div>
                         </div>
 
-                        <!-- Baris Penuh: Alamat -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="mb-3">
@@ -116,9 +112,8 @@
     </div>
 </div>
 
-<!-- Custom CSS (Sesuai Referensi) -->
-<!-- Custom CSS -->
 <style>
+    /* Tombol Solid (Simpan) */
     .btn-custom {
         background: linear-gradient(90deg, #36d1dc 0%, #5b86e5 100%);
         border: none;
@@ -129,6 +124,25 @@
     .btn-custom:hover {
         background: linear-gradient(90deg, #5b86e5 0%, #36d1dc 100%);
     }
+
+    /* --- PERBAIKAN: Style Khusus Tombol Kembali (Outline) --- */
+    .btn-outline-custom {
+        background: transparent;       /* Latar transparan saat diam */
+        border: 1px solid #5b86e5;     /* Garis pinggir biru */
+        color: #5b86e5;                /* Teks biru */
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    
+    /* Efek saat kursor diarahkan (Hover) */
+    .btn-outline-custom:hover {
+        background: linear-gradient(90deg, #36d1dc 0%, #5b86e5 100%); /* Jadi gradient */
+        color: white;                  /* Teks jadi putih */
+        border-color: transparent;     /* Border hilang */
+        transform: translateY(-2px);   /* Efek naik sedikit */
+    }
+
+    /* Style lainnya tetap sama */
     .btn-close.btn-custom {
         padding: 0;
         border: none;
@@ -188,5 +202,3 @@
     }
 </style>
 @endsection
-
-
