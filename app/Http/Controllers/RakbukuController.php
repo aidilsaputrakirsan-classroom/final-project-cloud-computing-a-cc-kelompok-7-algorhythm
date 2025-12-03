@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Rack;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\ActivityLog; // <--- PENTING: Import Model
 
 class RakbukuController extends Controller
 {
@@ -36,12 +37,27 @@ class RakbukuController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        Rack::create([
+        // Simpan data baru
+        $rack = Rack::create([
             'name' => $request->input('name'),
             'rak' => $request->input('rak'),
         ]);
 
+        // --- REKAM LOG ---
+        ActivityLog::record(
+            'CREATE',
+            'Menambahkan Rak Baru: ' . $rack->name,
+            ['lokasi_rak' => $rack->rak]
+        );
+        // -----------------
+
         return redirect()->route('Rak.showdata')->with('msg', 'Rak berhasil ditambahkan');
+    }
+
+    public function edit($id)
+    {
+        $rack = Rack::findOrFail($id);
+        return view('Rak.edit', compact('rack'));
     }
 
     public function update(Request $request, $id)
@@ -56,25 +72,44 @@ class RakbukuController extends Controller
         }
 
         $rack = Rack::findOrFail($id);
-        $rack->name = $request->input('rack_name');
+        $oldName = $rack->name; // Simpan nama lama untuk log
+
+        $rack->name = $request->input('rack_name'); 
         $rack->rak = $request->input('rak');
         $rack->save();
+
+        // --- REKAM LOG ---
+        ActivityLog::record(
+            'UPDATE',
+            'Memperbarui Rak: ' . $oldName,
+            [
+                'nama_baru' => $rack->name,
+                'lokasi_baru' => $rack->rak
+            ]
+        );
+        // -----------------
 
         return redirect()->route('Rak.showdata')->with('msg', 'Rak berhasil diperbarui');
     }
 
-
     public function destroy($id)
     {
-    $rack = Rack::findOrFail($id);
+        $rack = Rack::findOrFail($id);
 
-    if ($rack->books()->count() > 0) {
-    return redirect()->route('Rak.showdata')->with('error', 'Rak tidak dapat dihapus karena masih memiliki buku');
+        if ($rack->books()->count() > 0) {
+            return redirect()->route('Rak.showdata')->with('error', 'Rak tidak dapat dihapus karena masih memiliki buku');
+        }
+
+        $namaRak = $rack->name; // Simpan nama sebelum dihapus
+        $rack->delete();
+
+        // --- REKAM LOG ---
+        ActivityLog::record(
+            'DELETE',
+            'Menghapus Rak: ' . $namaRak
+        );
+        // -----------------
+
+        return redirect()->route('Rak.showdata')->with('msg', 'Rak berhasil dihapus');
     }
-
-    $rack->delete();
-
-    return redirect()->route('Rak.showdata')->with('msg', 'Rak berhasil dihapus');
-    }
-
 }

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Kategori Buku')
+@section('title', 'Edit Kategori')
 
 @section('content')
 <div class="container mt-4 animate__animated animate__fadeIn">
@@ -8,34 +8,42 @@
         <div class="col-12">
             <div class="card shadow-sm animate__animated animate__fadeInUp">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Tambah Kategori</h5>
-                    
+                    <h5 class="card-title mb-0">Edit Kategori: {{ $category->name }}</h5>
                     <a href="{{ route('member.index') }}" class="btn btn-sm btn-outline-custom">
     <i class="ti ti-arrow-left"></i> Kembali
 </a>
                 </div>
 
                 <div class="card-body">
-                    @if (session('msg'))
+                    @if ($errors->any())
                         <div class="alert alert-danger alert-dismissible fade show animate__animated animate__fadeInDown" role="alert">
-                            {{ session('msg') }}
+                            <strong>Oops! Terjadi kesalahan:</strong>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                             <button type="button" class="btn-close btn-custom" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
 
-                    <form action="{{ route('categories.store') }}" method="post">
-                        @csrf
-                        
-                        <div class="mb-3">
-                            <label for="kategori" class="form-label">Nama Kategori</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="kategori" name="name"
-                                value="{{ old('name') }}" placeholder="Contoh: Novel, Komik, Sains">
-                            @error('name')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                            @enderror
+                    <form action="{{ route('categories.update', $category->id) }}" method="post" id="form-category-edit">
+                        @csrf 
+                        @method('PUT')
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Nama Kategori</label>
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $category->name) }}" placeholder="Masukkan Nama Kategori" required>
+                                    @error('name')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-custom">Simpan</button>
+                        <button type="submit" class="btn btn-primary btn-custom">Simpan Perubahan</button>
                     </form>
                 </div>
             </div>
@@ -44,7 +52,6 @@
 </div>
 
 <style>
-    /* Tombol Solid (Untuk Tombol Simpan) */
     /* Ini adalah Potongan CSS untuk Tombol Kembali */
 .btn-outline-custom {
     background: transparent;       /* Transparan saat diam */
@@ -70,16 +77,16 @@
     .btn-custom:hover {
         background: linear-gradient(90deg, #5b86e5 0%, #36d1dc 100%);
     }
-    
-    /* Efek saat kursor diarahkan (Hover) */
-    .btn-outline-custom:hover {
-        background: linear-gradient(90deg, #36d1dc 0%, #5b86e5 100%); /* Jadi gradient */
-        color: white;                  /* Teks jadi putih */
-        border-color: transparent;     /* Border hilang */
-        transform: translateY(-2px);   /* Efek naik sedikit */
+    .btn-outline-primary.btn-custom {
+        background: transparent;
+        border-color: #5b86e5;
+        color: #5b86e5;
     }
-
-    /* Style lainnya tetap sama */
+    .btn-outline-primary.btn-custom:hover {
+        background: linear-gradient(90deg, #5b86e5 0%, #36d1dc 100%);
+        color: white;
+        border-color: #5b86e5;
+    }
     .btn-close.btn-custom {
         padding: 0;
         border: none;
@@ -111,12 +118,8 @@
     .animate__animated {
         animation-duration: 0.5s;
     }
-    .animate__fadeInUp {
-        animation-name: fadeInUp;
-    }
-    .animate__fadeInDown {
-        animation-name: fadeInDown;
-    }
+    .animate__fadeInUp { animation-name: fadeInUp; }
+    .animate__fadeInDown { animation-name: fadeInDown; }
     @keyframes fadeInUp {
         from { opacity: 0; transform: translate3d(0, 50%, 0); }
         to { opacity: 1; transform: none; }

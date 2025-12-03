@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Buku')
+@section('title', 'Edit Buku')
 
 @section('content')
 <div class="container mt-4 animate__animated animate__fadeIn">
@@ -8,13 +8,13 @@
         <div class="col-12">
             <div class="card shadow-sm animate__animated animate__fadeInUp">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Tambah Buku Baru</h5>
+                    <h5 class="card-title mb-0">Edit Buku: {{ $book->title }}</h5>
                     <a href="{{ route('member.index') }}" class="btn btn-sm btn-outline-custom">
     <i class="ti ti-arrow-left"></i> Kembali
 </a>
                 </div>
+
                 <div class="card-body">
-                    <!-- Menampilkan Error Validasi -->
                     @if ($errors->any())
                         <div class="alert alert-danger alert-dismissible fade show animate__animated animate__fadeInDown" role="alert">
                             <strong>Oops! Terjadi kesalahan:</strong>
@@ -27,124 +27,103 @@
                         </div>
                     @endif
 
-                    <!-- Formulir Tambah Buku -->
-                    <form action="{{ route('books.store') }}" method="post" id="form-book-create" enctype="multipart/form-data">
-                        @csrf 
-                        <!-- Tidak ada @method('PUT') karena ini Create (POST) -->
+                    <form action="{{ route('books.update', $book->id) }}" method="post" id="form-book-edit" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
 
                         <div class="row">
-                            <!-- Kolom Kiri: Info Utama Buku -->
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="title" class="form-label">Judul Buku</label>
-                                    <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" placeholder="Masukkan Judul Buku" required>
-                                    @error('title')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
+                                    <input type="text" class="form-control" id="title" name="title" value="{{ old('title', $book->title) }}" required>
+                                    @error('title') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="author" class="form-label">Penulis</label>
-                                    <input type="text" class="form-control" id="author" name="author" value="{{ old('author') }}" placeholder="Nama Penulis" required>
-                                    @error('author')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="publisher" class="form-label">Penerbit</label>
-                                    <input type="text" class="form-control" id="publisher" name="publisher" value="{{ old('publisher') }}" placeholder="Nama Penerbit">
-                                    @error('publisher')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
+                                    <input type="text" class="form-control" id="author" name="author" value="{{ old('author', $book->author) }}" required>
+                                    @error('author') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                                 </div>
 
-                                <!-- Nested Row untuk Tahun dan ISBN -->
+                                <div class="mb-3">
+                                    <label for="publisher" class="form-label">Penerbit</label>
+                                    <input type="text" class="form-control" id="publisher" name="publisher" value="{{ old('publisher', $book->publisher) }}">
+                                    @error('publisher') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="year" class="form-label">Tahun Terbit</label>
-                                        <input type="number" class="form-control" id="year" name="year" value="{{ old('year') }}" placeholder="Contoh: 2024">
-                                        @error('year')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
+                                        <input type="number" class="form-control" id="year" name="year" value="{{ old('year', $book->year) }}">
+                                        @error('year') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="isbn" class="form-label">ISBN</label>
-                                        <input type="text" class="form-control" id="isbn" name="isbn" value="{{ old('isbn') }}" placeholder="Nomor ISBN">
-                                        @error('isbn')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
+                                        <input type="text" class="form-control" id="isbn" name="isbn" value="{{ old('isbn', $book->isbn) }}">
+                                        @error('isbn') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Kolom Kanan: Kategori, Rak, Stok & Cover -->
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="category_id" class="form-label">Kategori</label>
                                     <select class="form-control" id="category_id" name="category_id">
-                                        <option value="" selected disabled>Pilih Kategori</option>
                                         @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            <option value="{{ $category->id }}" {{ old('category_id', $book->category_id) == $category->id ? 'selected' : '' }}>
                                                 {{ $category->name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('category_id')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
+                                    @error('category_id') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                                 </div>
 
-                                <!-- Nested Row untuk Rak dan Stok -->
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="rack_id" class="form-label">Lokasi Rak</label>
                                         <select class="form-control" id="rack_id" name="rack_id">
-                                            <option value="" selected disabled>Pilih Rak</option>
                                             @foreach ($racks as $rack)
-                                                <option value="{{ $rack->id }}" {{ old('rack_id') == $rack->id ? 'selected' : '' }}>
+                                                <option value="{{ $rack->id }}" {{ old('rack_id', $book->rack_id) == $rack->id ? 'selected' : '' }}>
                                                     {{ $rack->name }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error('rack_id')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
+                                        @error('rack_id') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="jmlh_tersedia" class="form-label">Stok Awal</label>
-                                        <input type="number" class="form-control" id="jmlh_tersedia" name="jmlh_tersedia" value="{{ old('jmlh_tersedia') }}" placeholder="0">
-                                        @error('jmlh_tersedia')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                        @enderror
+                                        <label for="jumlah" class="form-label">Stok Buku</label>
+                                        <input type="number" class="form-control" id="jumlah" name="jumlah" value="{{ old('jumlah', optional($book->bookStock)->jmlh_tersedia ?? 0) }}">
+                                        @error('jumlah') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="cover" class="form-label">Upload Cover Buku</label>
-                                    <input type="file" class="form-control" id="cover" name="cover" accept=".jpeg,.jpg,.png,.gif">
-                                    <small class="text-muted">Format: jpg, jpeg, png. Maksimal 2MB.</small>
-                                    @error('cover')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
+                                    <label for="book_cover" class="form-label">Update Cover Buku</label>
+                                    <input type="file" class="form-control" id="book_cover" name="book_cover">
+                                    <small class="form-text text-muted">Kosongkan jika tidak ingin mengganti cover.</small>
+                                    @error('book_cover') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+
+                                    @if($book->book_cover)
+                                        <div class="mt-2">
+                                            <img src="{{ asset($book->book_cover) }}" alt="Current Cover" style="height: 100px; width: auto; object-fit: cover; border-radius: 5px; border: 1px solid #dee2e6;">
+                                            <small class="ms-2 text-muted">Cover saat ini</small>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Baris Penuh: Deskripsi -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Deskripsi</label>
-                                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="Tulis deskripsi buku disini...">{{ old('description') }}</textarea>
-                                    @error('description')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
+                                    <textarea class="form-control" id="description" name="description" rows="3">{{ old('description', $book->description) }}</textarea>
+                                    @error('description') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary btn-custom">Simpan Data</button>
+                        <button type="submit" class="btn btn-primary btn-custom">Simpan Perubahan</button>
                     </form>
                 </div>
             </div>
@@ -152,7 +131,6 @@
     </div>
 </div>
 
-<!-- Custom CSS (Sama persis seperti contoh Edit Member/Buku) -->
 <style>
     /* Ini adalah Potongan CSS untuk Tombol Kembali */
 .btn-outline-custom {
@@ -220,7 +198,6 @@
     .animate__animated {
         animation-duration: 0.5s;
     }
-    /* Animasi */
     .animate__fadeInUp { animation-name: fadeInUp; }
     .animate__fadeInDown { animation-name: fadeInDown; }
     @keyframes fadeInUp {

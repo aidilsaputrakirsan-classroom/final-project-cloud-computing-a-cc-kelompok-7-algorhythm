@@ -22,30 +22,30 @@ class LoginController extends Controller
      * Menangani percobaan autentikasi.
      */
     public function authenticate(Request $request): RedirectResponse
-    {
-        // 1. Validasi input (email dan password Wajib diisi)
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+{
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
 
-        // 2. Coba lakukan login
-        // Kita juga tambahkan 'remember'
-        $remember = $request->has('remember'); // Cek apakah checkbox 'remember' dicentang
+    $remember = $request->has('remember');
 
-        if (Auth::attempt($credentials, $remember)) {
-            // 3. Jika berhasil
-            $request->session()->regenerate(); // Regenerate session untuk keamanan
+    if (Auth::attempt($credentials, $remember)) {
+        $request->session()->regenerate();
 
-            // Arahkan user ke halaman yang tadinya ingin mereka tuju,
-            // atau default ke '/dashboard'
-            return redirect()->intended('dashboard');
+        // --- LOGIKA REDIRECT BERDASARKAN ROLE ---
+        $user = Auth::user();
+
+        if ($user->role === 'admin') {
+            return redirect()->intended('dashboard'); // Admin ke Dashboard
         }
 
-        // 4. Jika gagal
-        // Kembalikan ke halaman login dengan pesan error
-        return back()->with('error', 'Login gagal! Email atau password salah.');
+        return redirect()->route('landing'); // User biasa ke Landing Page
+        // ----------------------------------------
     }
+
+    return back()->with('error', 'Login gagal! Email atau password salah.');
+}
 
     /**
      * Menangani proses logout.

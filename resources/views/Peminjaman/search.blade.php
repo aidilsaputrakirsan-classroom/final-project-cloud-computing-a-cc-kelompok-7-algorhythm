@@ -1,230 +1,245 @@
 @extends('layouts.app')
 
-@section('title', 'Cari Peminjaman')
+@section('title', 'Cari Member Peminjaman')
 
 @section('content')
-    <div class="container-fluid">
-        <!-- Tombol Kembali -->
-        <a href="{{ route('peminjaman') }}"
-            class="btn btn-outline-primary mb-3 animate__animated animate__fadeInLeft modern-btn">
-            <i class="ti ti-arrow-left"></i> Kembali
-        </a>
-
-        <!-- Kartu Utama -->
-        <div class="card shadow-lg rounded-lg border-0 animate__animated animate__fadeInUp">
-            <!-- Menampilkan Kesalahan -->
-            @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show animate__animated animate__shakeX" role="alert">
-                    @foreach ($errors->all() as $error)
-                        <div>{{ $error }}</div>
-                    @endforeach
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="container mt-4 animate__animated animate__fadeIn">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <div class="card shadow-sm animate__animated animate__fadeInUp mb-4">
+                
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Cari Anggota Peminjam</h5>
+                    <a href="{{ route('peminjaman') }}" class="btn btn-sm btn-outline-custom">
+                        <i class="ti ti-arrow-left"></i> Kembali
+                    </a>
                 </div>
-            @endif
 
-            <!-- Menampilkan Pesan Kesalahan dari Session -->
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show animate__animated animate__shakeX"
-                    role="alert">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            <!-- Alert Member Ditemukan dan Tidak Ditemukan -->
-            <div id="memberFoundAlert"
-                class="alert alert-success alert-dismissible fade show d-none animate__animated animate__fadeInDown"
-                role="alert">
-                Member ditemukan.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            <div id="memberNotRegisteredAlert"
-                class="alert alert-danger alert-dismissible fade show d-none animate__animated animate__fadeInDown"
-                role="alert">
-                Member tidak ditemukan.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-
-            <div class="card-body">
-                <div class="row justify-content-center">
-                    
-                    <!-- Kolom Scan QR Dihapus Sesuai Permintaan -->
-
-                    <!-- Kolom Pencarian Email -->
-                    <div class="col-12 col-md-8 col-lg-6 mb-4"> <!-- Dibuat lebih lebar -->
-                        <h5 class="card-title fw-bold mb-4 text-center">Cari Anggota</h5>
-                        <div class="input-group mb-3">
-                            <input type="email" class="form-control" id="email" name="email"
-                                placeholder="Masukkan Email Anggota">
-                            <button class="btn btn-outline-primary animate__animated animate__pulse modern-btn"
-                                onclick="searchMemberByEmail()">Cari</button>
+                <div class="card-body p-4">
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show animate__animated animate__shakeX" role="alert">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <div class="invalid-feedback"></div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show animate__animated animate__shakeX" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    <div class="row justify-content-center mt-2">
+                        <div class="col-md-8">
+                            <div class="mb-3 text-center">
+                                <label for="email" class="form-label fw-bold text-secondary">Masukkan Email Anggota</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="ti ti-email"></i></span>
+                                    <input type="email" class="form-control form-control-lg" id="email" name="email" 
+                                           placeholder="Contoh: member@example.com">
+                                    <button class="btn btn-custom px-4" onclick="searchMemberByEmail()">
+                                        <i class="ti ti-search me-1"></i> Cari
+                                    </button>
+                                </div>
+                                <div class="form-text">Pastikan email anggota sudah terdaftar di sistem.</div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Tabel Anggota -->
-                <div class="row justify-content-center d-none" id="memberTableContainer">
-                    <div class="col-12">
-                        <div class="table-responsive">
-                            <table class="table text-center table-hover table-striped">
-                                <thead class="table-white">
-                                    <tr>
-                                        <!--<th scope="col">ID</th>-->
-                                        <th scope="col">Nama</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Telepon</th>
-                                        <th scope="col">Alamat</th>
-                                        <th scope="col">Image</th>
-                                        <th scope="col">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="memberTableBody">
-                                    <!-- Baris tabel akan dimasukkan secara dinamis -->
+            <div class="card shadow-sm animate__animated animate__fadeInUp d-none" id="memberTableContainer">
+                <div class="card-header bg-white py-3">
+                    <h6 class="card-title mb-0 fw-bold text-dark">
+                        <i class="ti ti-user me-2 text-primary"></i>Data Anggota Ditemukan
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped align-middle mb-0">
+                            <thead class="custom-thead bg-light">
+                                <tr>
+                                    <th scope="col" class="text-center">Profil</th>
+                                    <th scope="col">Nama Lengkap</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Telepon</th>
+                                    <th scope="col">Alamat</th>
+                                    <th scope="col" class="text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="memberTableBody" class="table-group-divider">
                                 </tbody>
-                            </table>
-                        </div>
+                        </table>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
+</div>
 
-    <!-- CSS Styles -->
-    <style>
-        .profile-image {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 50%;
-        }
+<style>
+    /* Tombol Utama (Biru Gradasi) */
+    .btn-custom {
+        background: linear-gradient(90deg, #36d1dc 0%, #5b86e5 100%);
+        border: none;
+        color: white;
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+    .btn-custom:hover {
+        background: linear-gradient(90deg, #5b86e5 0%, #36d1dc 100%);
+        color: white;
+        transform: translateY(-2px);
+    }
 
-        .table-hover tbody tr:hover {
-            background-color: #f1f1f1;
-        }
+    /* Tombol Outline (Kembali) */
+    .btn-outline-custom {
+        background: transparent;
+        border: 1px solid #5b86e5;
+        color: #5b86e5;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .btn-outline-custom:hover {
+        background: linear-gradient(90deg, #36d1dc 0%, #5b86e5 100%);
+        color: white;
+        border-color: transparent;
+    }
 
-        .modern-btn {
-            background: linear-gradient(90deg, rgba(58, 123, 213, 1) 0%, rgba(0, 212, 255, 1) 100%);
-            border: none;
-            color: white;
-            font-weight: bold;
-            padding: 10px 20px;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-        }
+    /* Tombol Pilih (Hijau Gradasi) - Akan disuntikkan via JS */
+    .btn-success-custom {
+        background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);
+        border: none;
+        color: white;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .btn-success-custom:hover {
+        background: linear-gradient(90deg, #38ef7d 0%, #11998e 100%);
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px rgba(56, 239, 125, 0.3);
+    }
 
-        .modern-btn .ti {
-            position: relative;
-            z-index: 1;
-            transition: transform 0.3s ease;
-        }
-
-        .modern-btn:hover {
-            background: linear-gradient(90deg, rgba(0, 212, 255, 1) 0%, rgba(58, 123, 213, 1) 100%);
-            transform: scale(1.05);
-        }
-
-        .modern-btn:hover .ti-plus {
-            transform: rotate(90deg);
-        }
-    </style>
-
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Script html5-qrcode dihapus -->
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-   <script>
+    /* Card Style */
+    .card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    /* Input Form */
+    .form-control-lg {
+        border-radius: 0 10px 10px 0;
+        border: 1px solid #ced4da;
+        font-size: 1rem;
+    }
+    .input-group-text {
+        border-radius: 10px 0 0 10px;
+        border: 1px solid #ced4da;
+        background-color: #f8f9fa;
+        color: #5b86e5;
+    }
+    .form-control:focus {
+        border-color: #5b86e5;
+        box-shadow: 0 0 0 0.2rem rgba(91, 134, 229, 0.25);
+    }
     
-    // Semua fungsi QR Code (startQrCodeScanner, stopQrCodeScanner, handleQrCodeScanned) telah dihapus
+    /* Foto Profil Bulat */
+    .profile-image {
+        width: 45px;
+        height: 45px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #dee2e6;
+    }
 
+    /* Header Table */
+    .custom-thead th {
+        font-weight: 600;
+        color: #555;
+        background-color: #f8f9fa;
+    }
+
+    .animate__animated {
+        animation-duration: 0.5s;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
     function searchMemberByEmail() {
         const email = $('#email').val();
-        // Clear table content before displaying new search result
+        
+        // Reset UI
         $('#memberTableBody').empty();
-        // Hide alerts if previously shown
-        $('#memberFoundAlert').addClass('d-none');
-        $('#memberNotRegisteredAlert').addClass('d-none');
-        // Hide table head if no result
-        $('thead').addClass('d-none');
+        $('#memberTableContainer').addClass('d-none');
+
+        if(!email) {
+            Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Harap masukkan email anggota!' });
+            return;
+        }
 
         $.ajax({
-            url: "{{ route('search.member.by.email') }}", // Rute ini sudah benar
+            url: "{{ route('search.member.by.email') }}",
             type: 'GET',
-            data: {
-                email: email
-            },
+            data: { email: email },
             success: function(response) {
                 if (response.member) {
-                    // Check if any required field is null
-                    if (!response.member.email || !response.member.imageProfile || !response.member.phone || !response.member.address || !response.member.tgl_lahir) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Data anggota tidak lengkap',
-                            text: 'Data anggota tidak lengkap. Silakan lengkapi profil.',
-                            showConfirmButton: true,
-                            timer: 4500
-                        });
+                    // Validasi data lengkap (Opsional, sesuaikan kebutuhan)
+                    if (!response.member.email || !response.member.phone) {
+                        Swal.fire({ icon: 'warning', title: 'Data Tidak Lengkap', text: 'Data anggota ini belum lengkap.' });
                         return;
                     }
 
-                    // Display member data on the page
-                    $('#memberTableBody').html(`
-                    <tr>
-                        <td style="display: none;">${response.member.id}</td>
-
-                        <td>${response.member.first_name} ${response.member.last_name}</td>
-                        <td>${response.member.email}</td>
-                        <td>${response.member.phone}</td>
-                        <td>${response.member.address}</td>
-                        <td>
-                            <img src="{{ asset('/profiles') }}/${response.member.imageProfile}" alt="Profile Image" class="profile-image">
-                        </td>
-                        <td>
-                            <form action="{{ route('search.book.page') }}" method="GET">
-                                <input type="hidden" name="member_id" value="${response.member.id}">
-                                <button type="submit" class="btn btn-outline-success animate__animated animate__heartBeat">
-                                    <i class="bi bi-check2-circle"></i> Pilih
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                `);
-                    // Display alert that member was found
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Member ditemukan',
-                        showConfirmButton: true,
-                        timer: 2500
-                    });
-                    // Show table head
-                    $('thead').removeClass('d-none');
-                    // Show table
+                    // Tampilkan Data
                     $('#memberTableContainer').removeClass('d-none');
+                    
+                    let profileImg = response.member.imageProfile 
+                        ? `{{ asset('/profiles') }}/${response.member.imageProfile}` 
+                        : `{{ asset('path/to/default-avatar.png') }}`;
+
+                    $('#memberTableBody').html(`
+                        <tr class="animate__animated animate__fadeIn">
+                            <td class="text-center">
+                                <img src="${profileImg}" alt="Profile" class="profile-image shadow-sm">
+                            </td>
+                            <td class="fw-bold text-dark">${response.member.first_name} ${response.member.last_name}</td>
+                            <td>${response.member.email}</td>
+                            <td>${response.member.phone}</td>
+                            <td>${response.member.address}</td>
+                            <td class="text-center">
+                                <form action="{{ route('search.book.page') }}" method="GET">
+                                    <input type="hidden" name="member_id" value="${response.member.id}">
+                                    <button type="submit" class="btn btn-sm btn-success-custom px-3">
+                                        <i class="ti ti-check me-1"></i> Pilih
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    `);
+
+                    Swal.fire({ icon: 'success', title: 'Ditemukan!', text: 'Anggota berhasil ditemukan.', timer: 1500, showConfirmButton: false });
+
                 } else {
-                    // Display alert that email is not registered
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Member tidak ditemukan',
-                        text: 'Email member tidak terdaftar',
-                        showConfirmButton: true,
-                        timer: 2500
-                    });
+                    Swal.fire({ icon: 'error', title: 'Tidak Ditemukan', text: 'Email anggota tidak terdaftar.' });
                 }
             },
-            error: function(xhr, status, thrown) {
-                console.log(thrown);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Member tidak terdaftar',
-                    text: 'Silakan coba lagi.',
-                });
+            error: function(xhr) {
+                console.log(xhr);
+                Swal.fire({ icon: 'error', title: 'Terjadi Kesalahan', text: 'Silakan coba lagi nanti.' });
             }
         });
     }
 </script>
-
 @endsection
